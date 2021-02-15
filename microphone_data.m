@@ -1,10 +1,17 @@
+close all;
+
+addpath("./Inc");
+
 pico_init;
 tek_init;
 
-
-
 % Configure property value(s).
-set_fgen(1000, 0.1, 0);
+FREQ = 1000;
+AMP = 0.1;
+OFFSET = 0
+set_fgen(FREQ, AMP, OFFSET);
+
+%Set chA and chB
 pico_take_data;
 
 figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture with FFT', ...

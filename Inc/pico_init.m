@@ -1,3 +1,6 @@
+%% Device Configuration
+PS5000aConfig;
+
 %% Device connection
 
 % Check if an Instrument session using the device object |ps5000aDeviceObj|
@@ -54,7 +57,7 @@ connect(ps5000aDeviceObj);
 [status.currentPowerSource] = invoke(ps5000aDeviceObj, 'ps5000aCurrentPowerSource');
 
 [status.setChA] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, ps5000aEnuminfo.enPS5000ARange.PS5000A_100MV, 0.0);
-[status.setChB] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', 1, 0, 1, 8, 0.0);
+[status.setChB] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, ps5000aEnuminfo.enPS5000ARange.PS5000A_100MV, 0.0);
     
 if (ps5000aDeviceObj.channelCount == PicoConstants.QUAD_SCOPE && status.currentPowerSource == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
     
