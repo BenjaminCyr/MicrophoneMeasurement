@@ -4,12 +4,7 @@ tek_init;
 
 
 % Configure property value(s).
-set(deviceObj.Frequency(1), 'Mode', 'Continuous')
-set(deviceObj.Frequency(1), 'Frequency', 1000)
-set(deviceObj.Voltage(1), 'Amplitude', 0.1)
-set(deviceObj.Output(1), 'State', 'on');
-pause(0.5);
-
+set_fgen(1000, 0.1, 0);
 pico_take_data;
 
 figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture with FFT', ...
