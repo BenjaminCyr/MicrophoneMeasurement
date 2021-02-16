@@ -1,3 +1,7 @@
+
+timebaseIndex = 65;
+set(ps5000aDeviceObj, 'timebase', timebaseIndex);
+
 [status.runBlock] = invoke(blockGroupObj, 'runBlock', 0);
 
 % Retrieve data values:
