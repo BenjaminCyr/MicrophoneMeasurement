@@ -1,4 +1,4 @@
-function [] = set_fgen(frequency, amplitude, offset)
+function [] = set_fgen(deviceObj, frequency, amplitude, offset)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 

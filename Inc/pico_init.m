@@ -91,7 +91,9 @@ end
 % segment index : 0
 
 status.getTimebase2 = PicoStatus.PICO_INVALID_TIMEBASE;
-timebaseIndex = 65;
+%timebaseIndex = 65;
+timebaseIndex = 10000;
+
 
 while (status.getTimebase2 == PicoStatus.PICO_INVALID_TIMEBASE)
     
@@ -129,13 +131,13 @@ triggerGroupObj = triggerGroupObj(1);
 % oscilloscope after 1 second if a trigger event has not occurred. Set to 0
 % to wait indefinitely for a trigger event.
 
-set(triggerGroupObj, 'autoTriggerMs', 1000);
+set(triggerGroupObj, 'autoTriggerMs', 100);
 
 % Channel     : 0 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A)
 % Threshold   : 1000 mV
 % Direction   : 2 (ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING)
 
-[status.setSimpleTrigger] = invoke(triggerGroupObj, 'setSimpleTrigger', 0, 1000, 2);
+[status.setSimpleTrigger] = invoke(triggerGroupObj, 'setSimpleTrigger', 0, 0, 2);
 
 %% Set block parameters and capture data
 % Capture a block of data and retrieve data values for channels A and B.
