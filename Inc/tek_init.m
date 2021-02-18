@@ -15,3 +15,4 @@ deviceObj = icdevice('tek_afg3000.mdd', interfaceObj);
 
 % Connect device object to hardware.
 connect(deviceObj);
+set(deviceObj.Output(1), 'State', 'on');

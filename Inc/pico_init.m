@@ -91,8 +91,8 @@ end
 % segment index : 0
 
 status.getTimebase2 = PicoStatus.PICO_INVALID_TIMEBASE;
-%timebaseIndex = 65;
-timebaseIndex = 10000;
+timebaseIndex = 65;
+% timebaseIndex = 10000;
 
 
 while (status.getTimebase2 == PicoStatus.PICO_INVALID_TIMEBASE)
@@ -148,7 +148,7 @@ blockGroupObj = blockGroupObj(1);
 % Set pre-trigger samples.
 set(ps5000aDeviceObj, 'numPreTriggerSamples', 1024);
 % Set post-trigger samples.
-set(ps5000aDeviceObj, 'numPostTriggerSamples', 100000);
+set(ps5000aDeviceObj, 'numPostTriggerSamples', 400000);
 
 %%
 % This example uses the |runBlock()| function in order to collect a block of
