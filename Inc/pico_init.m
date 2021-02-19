@@ -146,9 +146,9 @@ blockGroupObj = get(ps5000aDeviceObj, 'Block');
 blockGroupObj = blockGroupObj(1);
 
 % Set pre-trigger samples.
-set(ps5000aDeviceObj, 'numPreTriggerSamples', 1024);
+set(ps5000aDeviceObj, 'numPreTriggerSamples', 0);
 % Set post-trigger samples.
-set(ps5000aDeviceObj, 'numPostTriggerSamples', 400000);
+set(ps5000aDeviceObj, 'numPostTriggerSamples', 100000);
 
 %%
 % This example uses the |runBlock()| function in order to collect a block of
@@ -161,3 +161,4 @@ set(ps5000aDeviceObj, 'numPostTriggerSamples', 400000);
 % segment index: 0 (The buffer memory is not segmented in this example)
 
 [status.runBlock] = invoke(blockGroupObj, 'runBlock', 0);  %Allow AC coupling to settle
+pause(0.2);

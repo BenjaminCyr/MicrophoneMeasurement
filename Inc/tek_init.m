@@ -15,4 +15,8 @@ deviceObj = icdevice('tek_afg3000.mdd', interfaceObj);
 
 % Connect device object to hardware.
 connect(deviceObj);
+set(deviceObj.Function(1), 'Shape', 'sinusoid')
+set(deviceObj.Frequency(1), 'Mode', 'Continuous')
+set(deviceObj.Output(1), 'Impedance', 'Infinity');
+set_fgen(deviceObj, frequencies(1), AMP, OFFSET);
 set(deviceObj.Output(1), 'State', 'on');

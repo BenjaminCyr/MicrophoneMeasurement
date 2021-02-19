@@ -1,12 +1,13 @@
 close all;
 addpath("./Inc");
 
-AMP = 0.116;
-OFFSET = 1.464;
+AMP = 0.124;
+OFFSET = 1.016;
 frequencies = logspace(log10(20),log10(30000), 200);
 % frequencies = [100, 1000, 10000];
 
-out_file = "Test"
+out_file = "ADMP01_450nm_2mW_1mWpp_1atm";
+out_title = "ADMP01 450nm 2mW 1mWpp 1atm";
 
 try
     tek_init;
@@ -34,7 +35,7 @@ try
         freq_index = find(f >= frequencies(i), 1);  
 
         Y_A = fft(chA, n);
-%         % Obtain the single-sided spectrum of the signal.
+        % Obtain the single-sided spectrum of the signal.
 %         P2_A = abs(Y_A/n);
 %         P1_A = P2_A(1:n/2+1);
 %         P1_A(2:end-2) = 2 * P1_A(2:end-2);
@@ -44,10 +45,17 @@ try
 %         P1_B = P2_B(1:n/2+1);
 %         P1_B(2:end-2) = 2 * P1_B(2:end-2);
         
+        %semilogx(f, P1_A(1:n/2), f, P1_B(1:n/2));
+        
         [maxA_mag, maxA_ind] = max(abs(Y_A));
         [maxB_mag, maxB_ind] = max(abs(Y_B));
-%         mag_out(i) = maxA_mag; 
-        amp_out(i) = abs(max(chA) - min(chA));
+%         mag_out(i) = max(P1_A); 
+        smoothed_A = movmean(chA, floor(length(chA)/100));
+        [~, max_indices] = findpeaks(smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/2);
+        [~, min_indices] = findpeaks(-smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/2);
+        min_length = min([length(max_indices) length(min_indices)]);
+        
+        amp_out(i) = mean(smoothed_A(max_indices(1:min_length)) - smoothed_A(min_indices(1:min_length)))/1000;
         
         phase_out(i) = wrapToPi(angle(Y_B(maxA_ind)) - angle(Y_A(maxA_ind)))*180/pi;
         if maxA_ind ~= maxB_ind
@@ -60,18 +68,31 @@ try
         end
     end
     
+    set(0, 'DefaultAxesFontSize', 16);
     figure;
     subplot(2,1,1);
+    
     loglog(frequencies, amp_out);
+    title(out_title);
+%     title('Frequency Response');
+    ylim([0 max(amp_out)*1.2]);
+    ylabel('Peak-to-Peak Voltage (V)');
+    xlabel('Frequency (Hz)');
+    
     subplot(2,1,2);
     semilogx(frequencies, phase_out);
+%     title('Phase Response');
+    ylim([-180 180]);
+    ylabel('Phase (degrees)');
+    xlabel('Frequency (Hz)');
+    
+%     subplot(3,1,3);
+%     loglog(frequencies, mag_out);
     
     fullfig(gcf);
-    set(0, 'DefaultAxesFontSize', 30);
     savefig(strcat('./Output/figs/', out_file, '.fig'));
-    exportgraphics(gca,strcat('.Output/pngs/', out_file, '.png'),'Resolution',300) 
-    %     subplot(3,1,3);
-%     loglog(frequencies, mag_out);
+    exportgraphics(gcf,strcat('./Output/pngs/', out_file, '.png'),'Resolution',300) 
+   
     
 %     figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture with FFT', ...
 %         'NumberTitle','off');
