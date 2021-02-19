@@ -1,8 +1,12 @@
 close all;
+addpath("./Inc");
 
+AMP = 0.116;
+OFFSET = 1.464;
 frequencies = logspace(log10(20),log10(30000), 200);
 % frequencies = [100, 1000, 10000];
-addpath("./Inc");
+
+out_file = "Test"
 
 try
     tek_init;
@@ -18,10 +22,7 @@ try
     mag_out = zeros(1, length(frequencies));
     phase_out = zeros(1, length(frequencies));
     for i = 1:length(frequencies)
-        FREQ = frequencies(i);
-        AMP = 0.116;
-        OFFSET = 1.464;
-        set_fgen(deviceObj, FREQ, AMP, OFFSET);
+        set_fgen(deviceObj, frequencies(i), AMP, OFFSET);
         pico_take_data;
         
         % Calculate FFT of Channels and plot - based on <matlab:doc('fft') fft documentation>.
@@ -64,6 +65,11 @@ try
     loglog(frequencies, amp_out);
     subplot(2,1,2);
     semilogx(frequencies, phase_out);
+    
+    fullfig(gcf);
+    set(0, 'DefaultAxesFontSize', 30);
+    savefig(strcat('./Output/figs/', out_file, '.fig'));
+    exportgraphics(gca,strcat('.Output/pngs/', out_file, '.png'),'Resolution',300) 
     %     subplot(3,1,3);
 %     loglog(frequencies, mag_out);
     
