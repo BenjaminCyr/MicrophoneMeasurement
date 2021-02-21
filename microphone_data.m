@@ -1,13 +1,18 @@
 close all;
 addpath("./Inc");
 
-AMP = 0.124;
-OFFSET = 1.016;
-frequencies = logspace(log10(20),log10(30000), 200);
-% frequencies = [100, 1000, 10000];
+SAVE_DATA = true;
+NUM_SAVED_FILES = 5;
 
-out_file = "ADMP01_450nm_2mW_1mWpp_1atm";
-out_title = "ADMP01 450nm 2mW 1mWpp 1atm";
+AMP = 0.124;
+OFFSET = 1.204;
+out_file = "ADMP01_450nm_5mW_1mWpp_1atm";
+out_title = "ADMP01 450nm 5mW 1mWpp 1atm";
+out_data_folder = out_file;
+
+NUM_FREQS = 200;
+frequencies = logspace(log10(20),log10(30000), NUM_FREQS);
+% frequencies = [100, 1000, 10000];
 
 try
     tek_init;
@@ -17,7 +22,7 @@ try
     set_pico(ps5000aDeviceObj, ps5000aEnuminfo, status, 'A', ps5000aEnuminfo.enPS5000ARange.PS5000A_1V)
     set_pico(ps5000aDeviceObj, ps5000aEnuminfo, status, 'B', ps5000aEnuminfo.enPS5000ARange.PS5000A_1V)
 
-    
+    mkdir(strcat('./Output/data/', out_file));
      % Configure property value(s).
     amp_out = zeros(1, length(frequencies));
     mag_out = zeros(1, length(frequencies));
@@ -25,6 +30,11 @@ try
     for i = 1:length(frequencies)
         set_fgen(deviceObj, frequencies(i), AMP, OFFSET);
         pico_take_data;
+        if SAVE_DATA && (mod(i, ceil(NUM_FREQS/NUM_SAVED_FILES)) == 1)
+            timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
+            timeMs = timeNs / 1e6;
+            save(strcat('./Output/data/', out_file, '/', out_file, '_', string(frequencies(i)), 'Hz.mat'), 'chA', 'chB', 'timeMs');
+        end
         
         % Calculate FFT of Channels and plot - based on <matlab:doc('fft') fft documentation>.
         L = length(chA);
@@ -57,7 +67,7 @@ try
         
         amp_out(i) = mean(smoothed_A(max_indices(1:min_length)) - smoothed_A(min_indices(1:min_length)))/1000;
         
-        phase_out(i) = wrapToPi(angle(Y_B(maxA_ind)) - angle(Y_A(maxA_ind)))*180/pi;
+        phase_out(i) = wrapToPi(angle(Y_A(maxA_ind)) - angle(Y_B(maxA_ind)))*180/pi;
         if maxA_ind ~= maxB_ind
             disp("****************Frequency mismatch A and B****************")
             disp(abs(angle(Y_B(maxB_ind)) - angle(Y_A(maxA_ind)))*180/pi);
