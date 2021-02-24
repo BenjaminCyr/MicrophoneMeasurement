@@ -8,6 +8,6 @@ set(deviceObj.Frequency(1), 'Frequency', frequency)
 set(deviceObj.Voltage(1), 'Amplitude', amplitude)
 set(deviceObj.Voltage(1), 'Offset', offset )
 %set(deviceObj.Output(1), 'State', 'on');
-pause(0.01);
+pause(0.05);
 end
 

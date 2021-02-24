@@ -1,7 +1,7 @@
 
 OUTPUT_FOLDER = './Output/data/';
-DATA_FOLDER = 'ADMP01_450nm_5mW_1mWpp_1atm';
-DATA_FREQUENCY = '86.9842';
+DATA_FOLDER = 'SPU02_638nm_0.5mW_0.5mWpp_1atm';
+DATA_FREQUENCY = '1682.4175';
 
 convert_laser_diode_conroller = 500/10000; % mA/mV for laser diode controller
 

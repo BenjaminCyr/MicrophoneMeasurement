@@ -2,7 +2,7 @@
 timebaseIndex = 65;
 set(ps5000aDeviceObj, 'timebase', timebaseIndex);
 
-num_samples = ceil(4*1/frequencies(i)/timeIntervalNanoseconds/1e-9);
+num_samples = max([ceil(4*1/frequencies(i)/timeIntervalNanoseconds/1e-9) 3*length(lpfilter.Coefficients)]);
 set(ps5000aDeviceObj, 'numPostTriggerSamples', num_samples);
 
 [status.runBlock] = invoke(blockGroupObj, 'runBlock', 0);
