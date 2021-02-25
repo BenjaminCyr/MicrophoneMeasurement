@@ -4,10 +4,10 @@ addpath("./Inc");
 SAVE_DATA = true;
 NUM_SAVED_FILES = 5;
 
-AMP = 0.08;
-OFFSET = 1.490;
-out_file = "SPU02_638nm_5mW_1mWpp_1atm";
-out_title = "SPU02 638nm 5mW 1mWpp 1atm";
+AMP = 0.06;
+OFFSET = 0.930;
+out_file = "SPU02_450nm_0.5mW_0.5mWpp_0.5atm";
+out_title = "SPU02 450nm 0.5mW 0.5mWpp 0.5atm";
 out_data_folder = out_file;
 
 NUM_FREQS = 100;
@@ -31,7 +31,7 @@ try
 %    'DesignMethod','butter', 'SampleRate', Fs);
     lpfilter = designfilt('lowpassfir', 'PassbandFrequency', 30000, ...
                       'StopbandFrequency', 40000, 'PassbandRipple', 1, ...
-                      'StopbandAttenuation', 10, 'SampleRate', ...
+                      'StopbandAttenuation', 20, 'SampleRate', ...
                       Fs, 'DesignMethod', 'equiripple');
     amp_out = zeros(1, length(frequencies));
     mag_out = zeros(1, length(frequencies));
@@ -77,11 +77,14 @@ try
         maxB_ind = maxB_ind + start_index - 1;
 %         mag_out(i) = max(P1_A); 
         smoothed_A = movmean(chA, floor(length(chA)/100));
-        [~, max_indices] = findpeaks(smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/2);
-        [~, min_indices] = findpeaks(-smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/2);
+        [~, max_indices] = findpeaks(smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/4);
+        [~, min_indices] = findpeaks(-smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/4);
         min_length = min([length(max_indices) length(min_indices)]);
-        
-        amp_out(i) = mean(smoothed_A(max_indices(1:min_length)) - smoothed_A(min_indices(1:min_length)))/1000;
+        if min_length == 0
+            amp_out(i) = (max(smoothed_A) - min(smoothed_A))/1000;
+        else
+            amp_out(i) = mean(smoothed_A(max_indices(1:min_length)) - smoothed_A(min_indices(1:min_length)))/1000; 
+        end
         
         phase_out(i) = wrapToPi(angle(Y_A(maxA_ind)) - angle(Y_B(maxA_ind)))*180/pi;
         if maxA_ind ~= maxB_ind
