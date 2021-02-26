@@ -18,5 +18,5 @@ connect(deviceObj);
 set(deviceObj.Function(1), 'Shape', 'sinusoid')
 set(deviceObj.Frequency(1), 'Mode', 'Continuous')
 set(deviceObj.Output(1), 'Impedance', 'Infinity');
-set_fgen(deviceObj, frequencies(1), AMP, OFFSET);
-set(deviceObj.Output(1), 'State', 'on');
+set_fgen(deviceObj, frequencies(1), AMPLITUDES(START_INDEX), OFFSETS(START_INDEX));
+%set(deviceObj.Output(1), 'State', 'on');
