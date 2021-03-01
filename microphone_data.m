@@ -1,17 +1,20 @@
 close all;
 addpath("./Inc");
 
+% create our clean up object
+cleanupObj = onCleanup(@cleanMeUp);
+
 SAVE_DATA = true;
-FILTER_60HZ = true;
+% FILTER_60HZ = true;
 NUM_SAVED_FILES = 5;
 
-DEVICE = "ADMP01_DPKG_MEMBACK_NOTCH";
-LIGHT_WAVELENGTH = "450nm";
+DEVICE = "ADMP01_DPKG_ASIC";
+LIGHT_WAVELENGTH = "638nm";
 NUM_TESTS = 4;
 START_INDEX = 1;
-AMPLITUDES = [0.062 0.062 0.124 0.124];
-OFFSETS = [0.922 0.954 1.016 1.202];
-LABELS = ["0.5mW_0.5mWpp", "1mW_0.5mWpp", "2mW_1mWpp", "5mW_1mWpp"];
+AMPLITUDES = [0.080 0.080 0.080 0.080];
+OFFSETS = [2.624 2.684 2.8 3.158];
+LABELS = ["0.5mW_0.33mWpp", "1mW_0.33mWpp", "2mW_0.33mWpp", "5mW_0.33mWpp"];
 PRESSURE_ATM = "1atm";
 
 NUM_FREQS = 100;
@@ -35,9 +38,13 @@ try
                       'StopbandFrequency', 40000, 'PassbandRipple', 1, ...
                       'StopbandAttenuation', 20, 'SampleRate', ...
                       Fs, 'DesignMethod', 'equiripple');
-    notchfilter = designfilt('bandstopiir','PassbandFrequency1',55,'StopbandFrequency1',59, ...
-         'StopbandFrequency2',61,'PassbandFrequency2',65, 'StopbandAttenuation', 20, 'SampleRate',Fs, ...
-         'DesignMethod', 'butter');
+    % Design a filter with a Q-factor of Q=35 to remove a 60 Hz tone from 
+    % system running at Fs Hz.
+%     Wo = 60/(Fs/2);  BW = Wo/35;
+%     [b,a] = iirnotch(Wo,BW);
+%     notchfilter = designfilt('bandstopiir','PassbandFrequency1',55,'StopbandFrequency1',59, ...
+%          'StopbandFrequency2',61,'PassbandFrequency2',65, 'StopbandAttenuation', 20, 'SampleRate',Fs, ...
+%          'DesignMethod', 'butter');
     amp_out = zeros(1, length(frequencies));
     mag_out = zeros(1, length(frequencies));
     phase_out = zeros(1, length(frequencies));
@@ -47,15 +54,21 @@ try
             "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
             "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
         
+        if startsWith(user_input, "e") || startsWith(user_input, "c")
+            throw(MException('main:ForceTestEnd','deinitializing connections'));
+        end
         while startsWith(user_input, "s")
             i = 1;
             pico_take_data;
             timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
             timeMs = timeNs / 1e6;
             plot(timeMs, chA, timeMs, chB);
-             user_input = input(strcat("Begin Test ", string(j), "?\nTest Label = ", LABELS(j),...
+            user_input = input(strcat("Begin Test ", string(j), "?\nTest Label = ", LABELS(j),...
             "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
             "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
+            if startsWith(user_input, "e") || startsWith(user_input, "c")
+                throw(MException('main:ForceTestEnd','deinitializing connections'));
+            end
         end
         
         close all;
@@ -75,9 +88,10 @@ try
 
             chA = filtfilt(lpfilter, chA);
             chB = filtfilt(lpfilter, chB);
-            if FILTER_60HZ
-                chA = filtfilt(notchfilter, chA);
-            end
+%             if FILTER_60HZ
+%                 chA = filtfilt(notchfilter, chA);
+%                 chA = filter(b,a,chA);
+%             end
             
             chA = chA - mean(chA);
             chB = chB - mean(chB);
@@ -209,4 +223,8 @@ catch ME
         pico_deinit;
     end
     rethrow(ME);
+end
+
+function cleanMeUp()
+    
 end
