@@ -2,18 +2,18 @@ close all;
 addpath("./Inc");
 
 % create our clean up object
-cleanupObj = onCleanup(@cleanMeUp);
+% cleanupObj = onCleanup(@cleanMeUp);
 
 SAVE_DATA = true;
 % FILTER_60HZ = true;
 NUM_SAVED_FILES = 5;
 
-DEVICE = "ADMP01_DPKG_ASIC";
+DEVICE = "SPU02_DPKG_ASICTOP";
 LIGHT_WAVELENGTH = "450nm";
 NUM_TESTS = 4;
 START_INDEX = 1;
-AMPLITUDES = [0.040 0.040 0.040 0.040];
-OFFSETS = [0.922 0.954 1.016 1.202];
+AMPLITUDES = [0.045 0.045 0.045 0.045];
+OFFSETS = [0.922 0.958 1.030 1.244];
 LABELS = ["0.5mW_0.33mWpp", "1mW_0.33mWpp", "2mW_0.33mWpp", "5mW_0.33mWpp"];
 PRESSURE_ATM = "1atm";
 
