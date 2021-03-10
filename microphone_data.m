@@ -8,14 +8,19 @@ SAVE_DATA = true;
 % FILTER_60HZ = true;
 NUM_SAVED_FILES = 5;
 
-DEVICE = "SPU02_DPKG_ASICTOP";
-LIGHT_WAVELENGTH = "450nm";
-NUM_TESTS = 4;
+DEVICE = "SPU02_DPKG_MEMFRONT";
+LIGHT_WAVELENGTH = "638nm";
+NUM_TESTS = 8;
 START_INDEX = 1;
-AMPLITUDES = [0.045 0.045 0.045 0.045];
-OFFSETS = [0.922 0.958 1.030 1.244];
-LABELS = ["0.5mW_0.33mWpp", "1mW_0.33mWpp", "2mW_0.33mWpp", "5mW_0.33mWpp"];
-PRESSURE_ATM = "1atm";
+AMPLITUDES = [0.050 0.075 0.05 0.075 0.05 0.150 0.05 0.150];
+OFFSETS = [2.624 2.624 2.672 2.672 2.748 2.748 2.974 2.974];
+LABELS = ["0.5mW_0.33mWpp", "0.5mW_0.5mWpp", "1mW_0.33mWpp", "1mW_0.5mWpp",...
+    "2mW_0.33mWpp",  "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
+% AMPLITUDES = [0.040 0.040 0.040 0.040];
+% OFFSETS = [2.624 2.672 2.748 2.974];
+% LABELS = ["0.5mW_0.25mWpp", "1mW_0.25mWpp",...
+%     "2mW_0.25mWpp", "5mW_0.25mWpp"];
+PRESSURE_ATM = "0.5atm";
 
 NUM_FREQS = 100;
 frequencies = logspace(log10(20),log10(30000), NUM_FREQS);
@@ -50,8 +55,8 @@ try
     phase_out = zeros(1, length(frequencies));
     for j = START_INDEX:START_INDEX+NUM_TESTS-1
         
-        user_input = input(strcat("Begin Test ", string(j), "?\nTest Label = ", LABELS(j),...
-            "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
+        user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
+            "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
             "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
         
         if startsWith(user_input, "e") || startsWith(user_input, "c")
@@ -63,8 +68,8 @@ try
             timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
             timeMs = timeNs / 1e6;
             plot(timeMs, chA, timeMs, chB);
-            user_input = input(strcat("Begin Test ", string(j), "?\nTest Label = ", LABELS(j),...
-            "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
+            user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
+            "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
             "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
             if startsWith(user_input, "e") || startsWith(user_input, "c")
                 throw(MException('main:ForceTestEnd','deinitializing connections'));
