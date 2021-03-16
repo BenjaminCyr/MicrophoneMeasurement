@@ -8,7 +8,7 @@ SAVE_DATA = true;
 % FILTER_60HZ = true;
 NUM_SAVED_FILES = 5;
 
-DEVICE = "CMM02_DPKG_MEMFRONT";
+DEVICE = "ADMP01_DPKG_MEMFRONT";
 LIGHT_WAVELENGTH = "638nm";
 NUM_TESTS = 8;
 START_INDEX = 1;
@@ -16,11 +16,12 @@ AMPLITUDES = [0.052 0.078 0.052 0.078 0.052 0.156 0.052 0.156];
 OFFSETS = [2.604 2.604 2.652 2.652 2.728 2.728 2.962 2.962];
 LABELS = ["0.5mW_0.33mWpp", "0.5mW_0.5mWpp", "1mW_0.33mWpp", "1mW_0.5mWpp",...
     "2mW_0.33mWpp",  "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
+PRESSURE_ATM = "1atm";
 % AMPLITUDES = [0.040 0.040 0.040 0.040];
 % OFFSETS = [2.624 2.672 2.748 2.974];
 % LABELS = ["0.5mW_0.25mWpp", "1mW_0.25mWpp",...
 %     "2mW_0.25mWpp", "5mW_0.25mWpp"];
-PRESSURE_ATM = "0.5atm";
+
 
 NUM_FREQS = 100;
 frequencies = logspace(log10(20),log10(30000), NUM_FREQS);
