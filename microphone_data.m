@@ -5,13 +5,13 @@ addpath("./Inc");
 % cleanupObj = onCleanup(@cleanMeUp);
 
 SAVE_DATA = true;
-% FILTER_60HZ = true;
+FILTER_60HZ = false;
 NUM_SAVED_FILES = 5;
 
-DEVICE = "ADMP01_DPKG_MEMFRONT";
+DEVICE = "VM01_DPKG_MEMFRONT";
 LIGHT_WAVELENGTH = "638nm";
-NUM_TESTS = 8;
-START_INDEX = 1;
+NUM_TESTS = 1;
+START_INDEX = 8;
 AMPLITUDES = [0.052 0.078 0.052 0.078 0.052 0.156 0.052 0.156];
 OFFSETS = [2.604 2.604 2.652 2.652 2.728 2.728 2.962 2.962];
 LABELS = ["0.5mW_0.33mWpp", "0.5mW_0.5mWpp", "1mW_0.33mWpp", "1mW_0.5mWpp",...
@@ -48,9 +48,9 @@ try
     % system running at Fs Hz.
 %     Wo = 60/(Fs/2);  BW = Wo/35;
 %     [b,a] = iirnotch(Wo,BW);
-%     notchfilter = designfilt('bandstopiir','PassbandFrequency1',55,'StopbandFrequency1',59, ...
-%          'StopbandFrequency2',61,'PassbandFrequency2',65, 'StopbandAttenuation', 20, 'SampleRate',Fs, ...
-%          'DesignMethod', 'butter');
+    notchfilter = designfilt('bandstopiir','FilterOrder',2, ...
+               'HalfPowerFrequency1',59,'HalfPowerFrequency2',61, ...
+               'DesignMethod','butter','SampleRate',Fs);
     amp_out = zeros(1, length(frequencies));
     mag_out = zeros(1, length(frequencies));
     phase_out = zeros(1, length(frequencies));
@@ -68,7 +68,7 @@ try
             pico_take_data;
             timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
             timeMs = timeNs / 1e6;
-            plot(timeMs, chA, timeMs, chB);
+            plot(timeMs, filt_chA, timeMs, filt_chB);
             user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
             "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
             "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
@@ -83,6 +83,8 @@ try
         mkdir(strcat('./Output/data/', out_file));
 
         set(deviceObj.Output(1), 'State', 'on');
+        pause(0.5);
+%         figure;
         for i = 1:length(frequencies)
             set_fgen(deviceObj, frequencies(i), AMPLITUDES(j), OFFSETS(j));
             pico_take_data;
@@ -92,30 +94,30 @@ try
                 save(strcat('./Output/data/', out_file, '/', out_file, '_', string(frequencies(i)), 'Hz.mat'), 'chA', 'chB', 'timeMs');
             end
 
-            chA = filtfilt(lpfilter, chA);
-            chB = filtfilt(lpfilter, chB);
-%             if FILTER_60HZ
-%                 chA = filtfilt(notchfilter, chA);
+            filt_chA = filtfilt(lpfilter, chA);
+            filt_chB = filtfilt(lpfilter, chB);
+            if FILTER_60HZ && frequencies(i) < 240
+                filt_chA = filtfilt(notchfilter, filt_chA);
 %                 chA = filter(b,a,chA);
-%             end
+            end
             
-            chA = chA - mean(chA);
-            chB = chB - mean(chB);
+            filt_chA = filt_chA - mean(filt_chA);
+            filt_chB = filt_chB - mean(filt_chB);
             % Calculate FFT of Channels and plot - based on <matlab:doc('fft') fft documentation>.
-            L = length(chA);
+            L = length(filt_chA);
             n = 2 ^ nextpow2(L); % Next power of 2 from length of chA
             Fs = 1 / (timeIntervalNanoseconds * 1e-9);
             f = 0:(Fs/n):(Fs/2 - Fs/n);
 
             freq_index = find(f >= frequencies(i), 1);  
 
-            Y_A = fft(chA, n);
+            Y_A = fft(filt_chA, n);
             % Obtain the single-sided spectrum of the signal.
     %         P2_A = abs(Y_A/n);
     %         P1_A = P2_A(1:n/2+1);
     %         P1_A(2:end-2) = 2 * P1_A(2:end-2);
     % 
-            Y_B = fft(chB, n);
+            Y_B = fft(filt_chB, n);
     %         P2_B = abs(Y_B/n);
     %         P1_B = P2_B(1:n/2+1);
     %         P1_B(2:end-2) = 2 * P1_B(2:end-2);
@@ -128,9 +130,15 @@ try
             [maxB_mag, maxB_ind] = max(abs(Y_B(start_index:end_index)));
             maxB_ind = maxB_ind + start_index - 1;
     %         mag_out(i) = max(P1_A); 
-            smoothed_A = movmean(chA, floor(length(chA)/100));
-            [~, max_indices] = findpeaks(smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/4);
-            [~, min_indices] = findpeaks(-smoothed_A, 'MinPeakDistance', floor(length(chA)/10), 'MinPeakProminence', max(chA)/4);
+            smoothed_A = movmean(filt_chA, floor(length(filt_chA)/100));
+            [~, max_indices] = findpeaks(smoothed_A, 'MinPeakDistance', floor(length(filt_chA)/10), 'MinPeakProminence', max(filt_chA)/4);
+            
+%             subplot(2,1,1);
+%             findpeaks(smoothed_A, 'MinPeakDistance', floor(length(filt_chA)/10), 'MinPeakProminence', max(filt_chA)/4)
+%             subplot(2,1,2);
+%             plot(chA)
+            
+            [~, min_indices] = findpeaks(-smoothed_A, 'MinPeakDistance', floor(length(filt_chA)/10), 'MinPeakProminence', max(filt_chA)/4);
             min_length = min([length(max_indices) length(min_indices)]);
             if min_length == 0
                 amp_out(i) = (max(smoothed_A) - min(smoothed_A))/1000;

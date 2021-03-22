@@ -1,7 +1,8 @@
 
 OUTPUT_FOLDER = './Output/data/';
-DATA_FOLDER = 'SPU02_DPKG_MEMFRONT_638nm_0.5mW_0.5mWpp_1atm';
+DATA_FOLDER = 'VM01_DPKG_ASIC_638nm_5mW_1mWpp_1atm';
 DATA_FREQUENCY = '20';
+%20, 87.6324, 383.9717, 1682.4175, 7371.7125
 
 convert_laser_diode_conroller = 500/10000; % mA/mV for laser diode controller
 
