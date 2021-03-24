@@ -92,7 +92,7 @@ end
 
 status.getTimebase2 = PicoStatus.PICO_INVALID_TIMEBASE;
 % timebaseIndex = 65;
-timebaseIndex = 1252; %100 KHz
+timebaseIndex = round(SAMPLE_PERIOD*125000000+2);%1252; %100 KHz
 
 
 while (status.getTimebase2 == PicoStatus.PICO_INVALID_TIMEBASE)
