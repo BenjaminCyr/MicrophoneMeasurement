@@ -1,5 +1,7 @@
 close all;
 addpath("./Inc");
+%% Device Configuration
+PS5000aConfig;
 
 % create our clean up object
 % cleanupObj = onCleanup(@cleanMeUp);
@@ -8,19 +10,25 @@ SAVE_DATA = true;
 FILTER_60HZ = false;
 NUM_SAVED_FILES = 5;
 
-DEVICE = "VM02_DPKG_MEMFRONT";
-LIGHT_WAVELENGTH = "638nm";
-NUM_TESTS = 4;
-START_INDEX = 4;
-AMPLITUDES = [0.052 0.078 0.052 0.078 0.052 0.156 0.052 0.156];
-OFFSETS = [2.604 2.604 2.652 2.652 2.728 2.728 2.962 2.962];
-LABELS = ["0.5mW_0.33mWpp", "0.5mW_0.5mWpp", "1mW_0.33mWpp", "1mW_0.5mWpp",...
-    "2mW_0.33mWpp",  "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
+DEVICE = "VM02_DPKG_ASICTOP";
+LIGHT_WAVELENGTH = "450nm";
+NUM_TESTS = 3;
+START_INDEX = 1;
+AMPLITUDES = [0.072 0.144 0.144];
+OFFSETS = [0.968 1.042 1.260];
+% AMPLITUDES = [0.078 0.156 0.156];
+% OFFSETS = [2.652 2.728 2.962];
+LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
+
+% AMPLITUDES = [0.052 0.078 0.052 0.078 0.052 0.156 0.052 0.156];
+% OFFSETS = [2.604 2.604 2.652 2.652 2.728 2.728 2.962 2.962];
+% LABELS = ["0.5mW_0.33mWpp", "0.5mW_0.5mWpp", "1mW_0.33mWpp", "1mW_0.5mWpp",...
+%     "2mW_0.33mWpp",  "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
 PRESSURE_ATM = "1atm";
 
-SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_50MV;
+SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
-SAMPLING_FREQUENCY = 500000; %Hz
+SAMPLING_FREQUENCY = 320000; %Hz
 SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
 % AMPLITUDES = [0.040 0.040 0.040 0.040];
 % OFFSETS = [2.624 2.672 2.748 2.974];
@@ -29,9 +37,10 @@ SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
 
 
 NUM_FREQS = 100;
-frequencies = logspace(log10(20),log10(30000), NUM_FREQS);
+potential_freqs = logspace(log10(20), log10(30000), NUM_FREQS);
 
-% frequencies = [100, 1000, 10000];
+%Try to align frequencies with Sampling Frequency (some rounding error)
+frequencies = SAMPLING_FREQUENCY./ceil(SAMPLING_FREQUENCY./round(potential_freqs));
 try
     tek_init;
     pico_init;
@@ -90,22 +99,22 @@ try
 
         set(deviceObj.Output(1), 'State', 'on');
         pause(0.5);
-        
-        %setup first capture
-        set_fgen(deviceObj, frequencies(i+1), AMPLITUDES(j), OFFSETS(j));
-        pico_capture;
 
         for i = 1:length(frequencies)
+            set_fgen(deviceObj, frequencies(i), AMPLITUDES(j), OFFSETS(j));
+            pico_capture;
             pico_get_data;
 
             %Testing Amplitude Accuracy
 %             t = 0:1/SAMPLING_FREQUENCY:(length(chA)-1)/SAMPLING_FREQUENCY;
 %             chA = chA + double(40*cos(2*pi*frequencies(i)*t'));
  
-            if i < length(frequencies)
-                set_fgen(deviceObj, frequencies(i+1), AMPLITUDES(j), OFFSETS(j));
-                pico_capture;
-            end
+%             % I wanted to process current block while waiting for ready,
+%             but the matlab driver doesn't work that way.
+%             if i < length(frequencies)
+%                 set_fgen(deviceObj, frequencies(i+1), AMPLITUDES(j), OFFSETS(j));
+%                 pico_capture;
+%             end
             if SAVE_DATA && (mod(i, ceil(NUM_FREQS/NUM_SAVED_FILES)) == 1)
                 timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
                 timeMs = timeNs / 1e6;
@@ -134,12 +143,13 @@ try
             % Window data
 %             w = hanning(L);
 %             w = flattopwin(L);
-%             w = blackman(L);
+            w = blackman(n);
 %             windowed_chA = filt_chA.*w; 
 
-            Y_A = fft(chA);
+            Y_A = fft(chA.*w);
             % Obtain the single-sided spectrum of the signal.
-            P2_A = abs(Y_A/n);
+            % Account for scaling due to sample number and windowing
+            P2_A = abs(Y_A/n/mean(w));
             P1_A = P2_A(1:n/2+1);
             P1_A(2:end-1) = 2*P1_A(2:end-1);
     
@@ -148,7 +158,7 @@ try
     %         P1_B = P2_B(1:n/2+1);
     %         P1_B(2:end-2) = 2 * P1_B(2:end-2);
 
-            semilogx(f, P1_A);
+%             semilogx(f, P1_A);
             
             start_index = max([2 freq_index - 1]);
             end_index = min([length(Y_A) freq_index + 1]);
@@ -159,18 +169,18 @@ try
     %         mag_out(i) = max(P1_A); 
 %             smoothed_A = movmean(filt_chA, floor(length(filt_chA)/100));
 %             [~, max_indices] = findpeaks(smoothed_A, 'MinPeakDistance', floor(length(filt_chA)/10), 'MinPeakProminence', max(filt_chA)/4);
-            maxP1_A_mag = 2*maxA_mag/n; % Account for fft magnitude scaling
+            maxP1_A_mag = 2*maxA_mag/n/mean(w); % Account for fft magnitude and window scaling
             maxP1_A_ind = maxA_ind;
-            if maxP1_A_ind == 1 || maxP1_A_ind == length(P1_A)
-                max_amplitude = maxP1_A_mag;
-            else
-                %Quadratic Peak Interpolation:
-                a = P1_A(maxP1_A_ind-1); 
-                b = P1_A(maxP1_A_ind); 
-                c = P1_A(maxP1_A_ind+1);
-                p = (a - c)/(a - 2*b + c)/2;
-                max_amplitude = b - p*(a-c)/4;
-            end
+%             if maxP1_A_ind == 1 || maxP1_A_ind == length(P1_A)
+%                 max_amplitude = maxP1_A_mag;
+%             else
+%                 %Quadratic Peak Interpolation:
+%                 a = P1_A(maxP1_A_ind-1); 
+%                 b = P1_A(maxP1_A_ind); 
+%                 c = P1_A(maxP1_A_ind+1);
+%                 p = (a - c)/(a - 2*b + c)/2;
+%                 max_amplitude = b - p*(a-c)/4;
+%             end
 %             subplot(2,1,1);
 %             findpeaks(smoothed_A, 'MinPeakDistance', floor(length(filt_chA)/10), 'MinPeakProminence', max(filt_chA)/4)
 %             subplot(2,1,2);
@@ -184,9 +194,9 @@ try
 %                 amp_out(i) = mean(smoothed_A(max_indices(1:min_length)) - smoothed_A(min_indices(1:min_length)))/1000; 
 %             end
 
-            amp_out(i) = max_amplitude;
-            if(max_amplitude < 0)
-                disp(max_amplitude);
+            amp_out(i) = maxP1_A_mag;
+            if(maxP1_A_mag < 0)
+                disp(maxP1_A_mag);
             end
             
 %             semilogx(frequencies, amp_out);
@@ -209,7 +219,8 @@ try
         loglog(frequencies, amp_out);
         title(out_file, 'Interpreter', 'None');
     %     title('Frequency Response');
-        ylim([0 max(amp_out)*1.2]);
+        ylim([min(amp_out)/1.2 max(amp_out)*1.2]);
+        xlim([0 50000]);
         ylabel('Amplitude (mV)');
         xlabel('Frequency (Hz)');
 
@@ -217,6 +228,7 @@ try
         semilogx(frequencies, phase_out);
     %     title('Phase Response');
         ylim([-180 180]);
+        xlim([0 50000]);
         ylabel('Phase (degrees)');
         xlabel('Frequency (Hz)');
 

@@ -2,13 +2,14 @@ Fs = 320000;
 Ts = 1/Fs;
 NUM_FREQS = 100;
 AMPLITUDE = 10;
-NOISE_AMPLITUDE = 5;
-NOISE_FREQUENCY = 61;
+NOISE_AMPLITUDE = 10;
+NOISE_FREQUENCY = 60;
 potential_freqs = logspace(log10(20), log10(30000), NUM_FREQS);
 
 frequencies = Fs./ceil(Fs./round(potential_freqs));
 % frequencies = potential_freqs;
 
+% min_num_samples = 4;
 min_num_samples = ceil(6*1/frequencies(1)/Ts);
 min_num_samples = min_num_samples + rem(min_num_samples, 2);
 
@@ -21,7 +22,7 @@ for i = 1:NUM_FREQS
     potential_num_samples = min_num_samples:2:(min_num_samples + 1/hunted_freq/Ts);
     integer_part = floor(potential_num_samples*Ts*hunted_freq);
     fractional_part = potential_num_samples*Ts*hunted_freq - integer_part;
-    [~, num_samples_index] = min(fractional_part);
+    [val, num_samples_index] = min(fractional_part);
     num_samples = potential_num_samples(num_samples_index);
     
 %     num_samples = min_num_samples;
@@ -43,7 +44,7 @@ for i = 1:NUM_FREQS
 %     Y = fft(x,n);
     % n = length(Y);
     P2 = abs(Y/n/mean(w));
-    P1 = P2(1:n/2+1);
+    P1 = P2(1:(n/2+1));
     P1(2:end-1) = 2*P1(2:end-1);
     f = Fs*(0:(n/2))/n;
 

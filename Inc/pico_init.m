@@ -1,6 +1,3 @@
-%% Device Configuration
-PS5000aConfig;
-
 %% Device connection
 
 % Check if an Instrument session using the device object |ps5000aDeviceObj|
