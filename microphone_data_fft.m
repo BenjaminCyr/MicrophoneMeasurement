@@ -10,21 +10,22 @@ SAVE_DATA = true;
 FILTER_60HZ = false;
 NUM_SAVED_FILES = 5;
 
-DEVICE = "VM02_DPKG_ASICTOP";
+DEVICE = "SPU02_DPKG_ASIC";
 LIGHT_WAVELENGTH = "450nm";
-NUM_TESTS = 3;
+NUM_TESTS = 6;
 START_INDEX = 1;
-AMPLITUDES = [0.072 0.144 0.144];
-OFFSETS = [0.968 1.042 1.260];
+% AMPLITUDES = [0.072 0.144 0.144];
+% OFFSETS = [0.968 1.042 1.260];
 % AMPLITUDES = [0.078 0.156 0.156];
 % OFFSETS = [2.652 2.728 2.962];
-LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
-
-% AMPLITUDES = [0.052 0.078 0.052 0.078 0.052 0.156 0.052 0.156];
-% OFFSETS = [2.604 2.604 2.652 2.652 2.728 2.728 2.962 2.962];
-% LABELS = ["0.5mW_0.33mWpp", "0.5mW_0.5mWpp", "1mW_0.33mWpp", "1mW_0.5mWpp",...
-%     "2mW_0.33mWpp",  "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
+% LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
 PRESSURE_ATM = "1atm";
+
+AMPLITUDES = [0.048 0.072 0.048 0.144 0.048 0.144];
+OFFSETS = [0.968 0.968 1.042 1.042 1.260 1.260];
+LABELS = ["1mW_0.33mWpp", "1mW_0.5mWpp","2mW_0.33mWpp",  ...
+    "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
+
 
 SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
@@ -79,11 +80,12 @@ try
             throw(MException('main:ForceTestEnd','deinitializing connections'));
         end
         while startsWith(user_input, "s")
+            i = 1;
             pico_capture;
             pico_get_data;
             timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
             timeMs = timeNs / 1e6;
-            plot(timeMs, filt_chA, timeMs, filt_chB);
+            plot(timeMs, chA, timeMs, chB);
             user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
             "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
             "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
