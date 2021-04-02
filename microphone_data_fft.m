@@ -121,7 +121,7 @@ try
             if SAVE_DATA && (mod(i, ceil(NUM_FREQS/NUM_SAVED_FILES)) == 1)
                 timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
                 timeMs = timeNs / 1e6;
-                save(strcat('./Output/data/', out_file, '/', out_file, '_', string(frequencies(i)), 'Hz.mat'), 'chA', 'chB', 'timeMs');
+                save(strcat('./Output/data/',DEVICE,'/', out_file, '/', out_file, '_', string(frequencies(i)), 'Hz.mat'), 'chA', 'chB', 'timeMs');
             end
 
 %             filt_chA = filtfilt(lpfilter, chA);
@@ -215,7 +215,7 @@ try
         end
         set(deviceObj.Output(1), 'State', 'off');
         
-        save(strcat('./Output/results/', out_file, '.mat'), 'frequencies', 'amp_out', 'phase_out');
+        save(strcat('./Output/results/', DEVICE,'/', out_file, '.mat'), 'frequencies', 'amp_out', 'phase_out');
         set(0, 'DefaultAxesFontSize', 16);
         figure;
         subplot(2,1,1);
@@ -239,8 +239,8 @@ try
     %     loglog(frequencies, mag_out);
 
         fullfig(gcf);
-        savefig(strcat('./Output/figs/', out_file, '.fig'));
-        exportgraphics(gcf,strcat('./Output/pngs/', out_file, '.png'),'Resolution',300) 
+        savefig(strcat('./Output/figs/', DEVICE,'/', out_file, '.fig'));
+        exportgraphics(gcf,strcat('./Output/pngs/', DEVICE,'/', out_file, '.png'),'Resolution',300) 
    
     end
     
