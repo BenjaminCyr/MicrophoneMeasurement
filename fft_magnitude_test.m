@@ -55,8 +55,8 @@ for i = 1:NUM_FREQS
 %     c = P1(expected_f+1);
 %     p = (a - c)/(a - 2*b + c)/2;
     amplitude = max(P1(expected_f-1:expected_f+1));
-    max_amplitude = a - p*(a-c)/4;
-    estimated_location = f(expected_f) + p*Fs/n;
+%     max_amplitude = a - p*(a-c)/4;
+%     estimated_location = f(expected_f) + p*Fs/n;
 %     disp([hunted_freq estimated_location])
     amp_out(i) = amplitude;
     errors(i) = abs(AMPLITUDE - amplitude)/AMPLITUDE;

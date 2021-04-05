@@ -9,17 +9,24 @@ PS5000aConfig;
 SAVE_DATA = true;
 FILTER_60HZ = false;
 NUM_SAVED_FILES = 5;
+WAIT_FOR_USER = false;
 
-DEVICE = "SPU02_DPKG_MEMFRONT";
-LIGHT_WAVELENGTH = "638nm";
-NUM_TESTS = 3;
+DEVICE = "SPA01_DPKG_ASICHIGH";
+LIGHT_WAVELENGTH = "450nm";
+NUM_TESTS = 6;
 START_INDEX = 1;
-% AMPLITUDES = [0.072 0.144 0.144];
-% OFFSETS = [0.968 1.042 1.260];
 
-AMPLITUDES = [0.080 0.160 0.160];
-OFFSETS = [2.72 2.79 3.02];
-LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
+% AMPLITUDES = [0.074 0.148 0.148];
+% OFFSETS = [0.970 1.044 1.266];
+% AMPLITUDES = [0.080 0.160 0.160];
+% OFFSETS = [2.616 2.69 2.926];
+% LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
+
+AMPLITUDES = [0.074 0.049 0.148 0.049 0.148 0.049];
+OFFSETS = [0.970 0.970 1.044 1.044 1.266 1.266];
+% AMPLITUDES = [0.080 0.053 0.160 0.053 0.160 0.053];
+% OFFSETS = [2.616 2.616 2.69 2.69 2.926 2.926];
+LABELS = ["1mW_0.5mWpp","1mW_0.33mWpp","2mW_1mWpp", "2mW_0.33mWpp","5mW_1mWpp", "5mW_0.33mWpp",];
 PRESSURE_ATM = "1atm";
 
 % AMPLITUDES = [0.048 0.072 0.048 0.144 0.048 0.144];
@@ -28,7 +35,7 @@ PRESSURE_ATM = "1atm";
 %     "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
 
 
-SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
+SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SAMPLING_FREQUENCY = 320000; %Hz
 SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
@@ -36,9 +43,20 @@ SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
 % OFFSETS = [2.624 2.672 2.748 2.974];
 % LABELS = ["0.5mW_0.25mWpp", "1mW_0.25mWpp",...
 %     "2mW_0.25mWpp", "5mW_0.25mWpp"];
-
-
 NUM_FREQS = 100;
+
+results_folder_name = strcat('./Output/results/',DEVICE);
+if ~exist(results_folder_name, 'dir')
+    mkdir(results_folder_name);
+end
+fig_folder_name = strcat('./Output/figs/',DEVICE);
+if ~exist(fig_folder_name, 'dir')
+    mkdir(fig_folder_name);
+end
+png_folder_name = strcat('./Output/pngs/',DEVICE);
+if ~exist(png_folder_name, 'dir')
+    mkdir(png_folder_name);
+end
 potential_freqs = logspace(log10(20), log10(30000), NUM_FREQS);
 
 %Try to align frequencies with Sampling Frequency (some rounding error)
@@ -73,32 +91,40 @@ try
     phase_out = zeros(1, length(frequencies));
     for j = START_INDEX:START_INDEX+NUM_TESTS-1
         i = 0;
-        user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
-            "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
-            "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
         
-        if startsWith(user_input, "e") || startsWith(user_input, "c") || startsWith(user_input, "q")
-            throw(MException('main:ForceTestEnd','deinitializing connections'));
-        end
-        while startsWith(user_input, "s")
-            i = 1;
-            pico_capture;
-            pico_get_data;
-            timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
-            timeMs = timeNs / 1e6;
-            plot(timeMs, chA, timeMs, chB);
+        if WAIT_FOR_USER
             user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
-            "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
-            "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
-            if startsWith(user_input, "e") || startsWith(user_input, "c")
+                "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
+                "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
+
+            if startsWith(user_input, "e") || startsWith(user_input, "c") || startsWith(user_input, "q")
                 throw(MException('main:ForceTestEnd','deinitializing connections'));
+            end
+            while startsWith(user_input, "s")
+                i = 1;
+                pico_capture;
+                pico_get_data;
+                timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
+                timeMs = timeNs / 1e6;
+                plot(timeMs, chA, timeMs, chB);
+                user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
+                "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
+                "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
+                if startsWith(user_input, "e") || startsWith(user_input, "c")
+                    throw(MException('main:ForceTestEnd','deinitializing connections'));
+                end
             end
         end
         
         close all;
         
         out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", LABELS(j), "_", PRESSURE_ATM);
-        mkdir(strcat('./Output/data/', out_file));
+        if ~exist(strcat('./Output/data/', DEVICE), 'dir')
+            mkdir(strcat('./Output/data/', DEVICE));
+        end
+        if ~exist(strcat('./Output/data/', DEVICE, '/', out_file), 'dir')
+            mkdir(strcat('./Output/data/', DEVICE, '/', out_file));
+        end
 
         set(deviceObj.Output(1), 'State', 'on');
         pause(0.5);
@@ -215,7 +241,7 @@ try
         end
         set(deviceObj.Output(1), 'State', 'off');
         
-        save(strcat('./Output/results/', DEVICE,'/', out_file, '.mat'), 'frequencies', 'amp_out', 'phase_out');
+        save(strcat(results_folder_name,'/', out_file, '.mat'), 'frequencies', 'amp_out', 'phase_out');
         set(0, 'DefaultAxesFontSize', 16);
         figure;
         subplot(2,1,1);
@@ -239,8 +265,8 @@ try
     %     loglog(frequencies, mag_out);
 
         fullfig(gcf);
-        savefig(strcat('./Output/figs/', DEVICE,'/', out_file, '.fig'));
-        exportgraphics(gcf,strcat('./Output/pngs/', DEVICE,'/', out_file, '.png'),'Resolution',300) 
+        savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+        exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
    
     end
     

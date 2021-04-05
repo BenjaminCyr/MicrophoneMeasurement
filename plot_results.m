@@ -2,16 +2,15 @@ close all;
 
 
 folder = "./Output/results";
-out_file = "VM_VacuumComparison2mW";
-DEVICES = ["VM01"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
-CUSTOM_FILES = ["VM02_DPKG_ASIC", "VM02_DPKG_ASIC_638nm_1mW_0.5mWpp_1atm";
-                "VM02_DPKG_MEMBACK", "VM02_DPKG_MEMBACK_450nm_1mW_0.5mWpp_1atm"];
+out_file = "CMM_ColorComparison2mW";
+DEVICES = ["CMM01", "CMM02_DPKG_MEMBACK", "CMM02_DPKG_MEMFRONT"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
+CUSTOM_FILES = [];
 
-OUT_COEFFICIENTS = [1, 1, 1, 1, 1, 1]; % To account for Vpp vs mV Amplitude
-LIGHT_FREQUENCIES = ["638nm"];
+OUT_COEFFICIENTS = []; % To account for Vpp vs mV Amplitude
+LIGHT_FREQUENCIES = ["450nm", "638nm"];
 DC_POWERS = ["2mW"];
 AC_POWERS = ["1mWpp"];
-PRESSURES = ["1atm", "0.2atm"];
+PRESSURES = ["1atm"];
 
 NUM_FREQS = 100;
 COMBINE_OUTPUTS = [];% ["SPU02_DPKG_MEMFRONT", "SPU02_DPKG_ASICTOP_450nm_5mW_0.33mWpp_1atm"];%["VM02_DPKG_MEMFRONT","VM02_DPKG_ASICTOP"];
@@ -25,8 +24,8 @@ COMBINE_COEFFICIENTS = [ones(1,NUM_FREQS); logspace(log10(10), log10(0.01),NUM_F
 
 RED = [1 0 0];
 BLUE = [0 0 1];
-COLOR_ORDER = [RED;];% BLUE];
-LINES_STYLE_ORDER = {'-', '--', '--', 'x--', 'x--', '--', 'o:', 'x:',  ':'};
+COLOR_ORDER = [BLUE; RED;];% BLUE];
+LINES_STYLE_ORDER = {'-', 'x-', '--', 'x--', 'x--', '--', 'o:', 'x:',  ':'};
 
 
 
@@ -38,6 +37,10 @@ num_plots = length(DEVICES)*length(LIGHT_FREQUENCIES)*length(DC_POWERS)*...
 legend_array = cell(1, num_plots);
 amp_outs = zeros(num_plots, NUM_FREQS);
 phase_outs = zeros(num_plots, NUM_FREQS);
+
+if isempty(OUT_COEFFICIENTS)
+    OUT_COEFFICIENTS = ones(1, num_plots);
+end
 
 if ~isempty(COMBINE_OUTPUTS)
     combine_complex = zeros(1, NUM_FREQS);
