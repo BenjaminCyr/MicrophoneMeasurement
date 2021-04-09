@@ -1,4 +1,4 @@
-Fs = 320000;
+Fs = 5000000;
 Ts = 1/Fs;
 NUM_FREQS = 100;
 AMPLITUDE = 10;

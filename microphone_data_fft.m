@@ -7,27 +7,28 @@ PS5000aConfig;
 % cleanupObj = onCleanup(@cleanMeUp);
 
 SAVE_DATA = true;
-FILTER_60HZ = false;
+LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
-WAIT_FOR_USER = false;
+WAIT_FOR_USER = true;
 
-DEVICE = "SPA01_DPKG_ASICHIGH";
-LIGHT_WAVELENGTH = "450nm";
-NUM_TESTS = 6;
+DEVICE = "SPH01";
+LIGHT_WAVELENGTH = "638nm";
+PRESSURE_ATM = "0.5atm";
+
+NUM_TESTS = 3;
 START_INDEX = 1;
 
 % AMPLITUDES = [0.074 0.148 0.148];
 % OFFSETS = [0.970 1.044 1.266];
-% AMPLITUDES = [0.080 0.160 0.160];
-% OFFSETS = [2.616 2.69 2.926];
-% LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
+AMPLITUDES = [0.078 0.156 0.156];
+OFFSETS = [2.662 2.738 2.974];
+LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
 
-AMPLITUDES = [0.074 0.049 0.148 0.049 0.148 0.049];
-OFFSETS = [0.970 0.970 1.044 1.044 1.266 1.266];
+% AMPLITUDES = [0.074 0.049 0.148 0.049 0.148 0.049];
+% OFFSETS = [0.970 0.970 1.044 1.044 1.266 1.266];
 % AMPLITUDES = [0.080 0.053 0.160 0.053 0.160 0.053];
 % OFFSETS = [2.616 2.616 2.69 2.69 2.926 2.926];
-LABELS = ["1mW_0.5mWpp","1mW_0.33mWpp","2mW_1mWpp", "2mW_0.33mWpp","5mW_1mWpp", "5mW_0.33mWpp",];
-PRESSURE_ATM = "1atm";
+% LABELS = ["1mW_0.5mWpp","1mW_0.33mWpp","2mW_1mWpp", "2mW_0.33mWpp","5mW_1mWpp", "5mW_0.33mWpp",];
 
 % AMPLITUDES = [0.048 0.072 0.048 0.144 0.048 0.144];
 % OFFSETS = [0.968 0.968 1.042 1.042 1.260 1.260];
@@ -37,12 +38,9 @@ PRESSURE_ATM = "1atm";
 
 SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
-SAMPLING_FREQUENCY = 320000; %Hz
+% SAMPLING_FREQUENCY = 320000; %Hz for Analog Mics
+SAMPLING_FREQUENCY = 12500000; %Hz for Digital Mics
 SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
-% AMPLITUDES = [0.040 0.040 0.040 0.040];
-% OFFSETS = [2.624 2.672 2.748 2.974];
-% LABELS = ["0.5mW_0.25mWpp", "1mW_0.25mWpp",...
-%     "2mW_0.25mWpp", "5mW_0.25mWpp"];
 NUM_FREQS = 100;
 
 results_folder_name = strcat('./Output/results/',DEVICE);
@@ -71,14 +69,15 @@ try
 
      % Configure property value(s).
      Fs = 1 / (timeIntervalNanoseconds * 1e-9);
-%     lpfilter = designfilt('lowpassfir', ...
-%    'PassbandFrequency',30000,'StopbandFrequency',40000, ...
-%    'StopbandAttenuation',20, ...
-%    'DesignMethod','butter', 'SampleRate', Fs);
-    lpfilter = designfilt('lowpassfir', 'PassbandFrequency', 30000, ...
-                      'StopbandFrequency', 40000, 'PassbandRipple', 1, ...
-                      'StopbandAttenuation', 20, 'SampleRate', ...
-                      Fs, 'DesignMethod', 'equiripple');
+
+%     lpfilter = designfilt('lowpassfir', 'PassbandFrequency', 30000, ...
+%                       'StopbandFrequency', 40000, 'PassbandRipple', 1, ...
+%                       'StopbandAttenuation', 40, 'SampleRate', ...
+%                       Fs, 'DesignMethod', 'equiripple');
+   
+    lpfilter = designfilt('lowpassiir', 'PassbandFrequency', 30000, ...
+        'StopbandFrequency', 40000, 'PassbandRipple', 0.2, ...
+        'StopbandAttenuation', 80, 'SampleRate', 10000000);          
     % Design a filter with a Q-factor of Q=35 to remove a 60 Hz tone from 
     % system running at Fs Hz.
 %     Wo = 60/(Fs/2);  BW = Wo/35;
@@ -150,7 +149,9 @@ try
                 save(strcat('./Output/data/',DEVICE,'/', out_file, '/', out_file, '_', string(frequencies(i)), 'Hz.mat'), 'chA', 'chB', 'timeMs');
             end
 
-%             filt_chA = filtfilt(lpfilter, chA);
+            if LOW_PASS_FILTER
+                chA = filtfilt(lpfilter, chA);
+            end
 %             filt_chB = filtfilt(lpfilter, chB);
 %             if FILTER_60HZ && frequencies(i) < 240
 %                 filt_chA = filtfilt(notchfilter, filt_chA);
