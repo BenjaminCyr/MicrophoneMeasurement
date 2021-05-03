@@ -9,20 +9,48 @@ PS5000aConfig;
 SAVE_DATA = true;
 LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
+WAIT_FOR_USER = false;
+
+DEVICE = "VM03";
+LIGHT_WAVELENGTH = "450nm";
+
+
+
+%[0.5 1 1.5 2 3 4 5]
+%[0.927 0.964 1 1.036 1.106 1.176 1.246]
+
+%Frequency RESPONSE
+% PRESSURES = [1];
+% AMPLITUDES = [0.070 0.140];
+% OFFSETS = [1.246 1.246];
+% LABELS = ["5mW_1mWpp", "5mW_2mWpp"];
+
+
+%AC RESPONSE
+% PRESSURES = [1];
+% AMP_MW = 0.75:0.25:4;
+% AMPLITUDES = AMP_MW*0.070;
+% OFFSETS = 1.246*ones(1, length(AMPLITUDES));
+% LABELS = "5mW_" + AMP_MW + "mWpp";
+
+%DC RESPONSE
+% PRESSURES = [1];
+% DC_MW = 1:0.25:5;
+% OFFSETS = 1.036+(DC_MW-2)*0.070;
+% AMPLITUDES = 0.070*ones(1, length(OFFSETS));
+% LABELS = DC_MW + "mW_1mWpp";
+
+%PRESSURE RESPONSE
 WAIT_FOR_USER = true;
+PRESSURES = 0.1:0.1:1;
+AMPLITUDES = 2*0.070*ones(1, length(PRESSURES));
+OFFSETS = 1.246*ones(1, length(PRESSURES));
+LABELS = repmat("5mW_2mWpp", 1, length(PRESSURES));
 
-DEVICE = "VM02_NP_MEMFRONT";
-LIGHT_WAVELENGTH = "638nm";
-PRESSURE_ATM = "0.5atm";
+% AMPLITUDES = [0.078 0.156 0.156];
+% OFFSETS = [2.662 2.738 2.974];
+% LABELS = "5mW_" + AMP_MW + "mWpp";
 
-NUM_TESTS = 3;
-START_INDEX = 1;
-
-% AMPLITUDES = [0.074 0.148 0.148];
-% OFFSETS = [0.970 1.044 1.266];
-AMPLITUDES = [0.078 0.156 0.156];
-OFFSETS = [2.662 2.738 2.974];
-LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
 
 % AMPLITUDES = [0.074 0.049 0.148 0.049 0.148 0.049];
 % OFFSETS = [0.970 0.970 1.044 1.044 1.266 1.266];
@@ -35,13 +63,20 @@ LABELS = ["1mW_0.5mWpp","2mW_1mWpp","5mW_1mWpp"];
 % LABELS = ["1mW_0.33mWpp", "1mW_0.5mWpp","2mW_0.33mWpp",  ...
 %     "2mW_1mWpp", "5mW_0.33mWpp", "5mW_1mWpp"];
 
+NUM_TESTS = length(LABELS);
+START_INDEX = 1;
 
 SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SAMPLING_FREQUENCY = 320000; %Hz for Analog Mics
 % SAMPLING_FREQUENCY = 12500000; %Hz for Digital Mics
 SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
-NUM_FREQS = 100;
+% NUM_FREQS = 100;
+% START_FREQ = 20;
+% END_FREQ = 30000;
+NUM_FREQS = 4;
+START_FREQ = 10;
+END_FREQ = 10000;
 
 results_folder_name = strcat('./Output/results/',DEVICE);
 if ~exist(results_folder_name, 'dir')
@@ -55,7 +90,7 @@ png_folder_name = strcat('./Output/pngs/',DEVICE);
 if ~exist(png_folder_name, 'dir')
     mkdir(png_folder_name);
 end
-potential_freqs = logspace(log10(20), log10(30000), NUM_FREQS);
+potential_freqs = logspace(log10(START_FREQ), log10(END_FREQ), NUM_FREQS);
 
 %Try to align frequencies with Sampling Frequency (some rounding error)
 frequencies = SAMPLING_FREQUENCY./ceil(SAMPLING_FREQUENCY./round(potential_freqs));
@@ -85,15 +120,20 @@ try
 %     notchfilter = designfilt('bandstopiir','FilterOrder',2, ...
 %                'HalfPowerFrequency1',59,'HalfPowerFrequency2',61, ...
 %                'DesignMethod','butter','SampleRate',Fs);
-    amp_out = zeros(1, length(frequencies));
-    mag_out = zeros(1, length(frequencies));
-    phase_out = zeros(1, length(frequencies));
+    amp_outs = zeros(NUM_TESTS, length(frequencies));
+%     mag_out = zeros(NUM_TESTS, length(frequencies));
+    phase_outs = zeros(NUM_TESTS, length(frequencies));
     for j = START_INDEX:START_INDEX+NUM_TESTS-1
         i = 0;
+        if length(PRESSURES) < 2
+            pressure_atm = PRESSURES(1) + "atm";
+        else
+            pressure_atm = PRESSURES(j) + "atm";
+        end
         
         if WAIT_FOR_USER
             user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
-                "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
+                "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", pressure_atm, ...
                 "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
 
             if startsWith(user_input, "e") || startsWith(user_input, "c") || startsWith(user_input, "q")
@@ -107,7 +147,7 @@ try
                 timeMs = timeNs / 1e6;
                 plot(timeMs, chA, timeMs, chB);
                 user_input = input(strcat("Begin Test ", string(j), "?\nDevice = ", DEVICE,... 
-                "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", PRESSURE_ATM, ...
+                "\nTest Label = ", LABELS(j), "\nWavelength = ", LIGHT_WAVELENGTH, "\nPressure = ", pressure_atm, ...
                 "\nAmplitude = ", string(AMPLITUDES(j)), "\nOffset = ", string(OFFSETS(j)), "\n"), 's');
                 if startsWith(user_input, "e") || startsWith(user_input, "c")
                     throw(MException('main:ForceTestEnd','deinitializing connections'));
@@ -224,13 +264,13 @@ try
 %                 amp_out(i) = mean(smoothed_A(max_indices(1:min_length)) - smoothed_A(min_indices(1:min_length)))/1000; 
 %             end
 
-            amp_out(i) = maxP1_A_mag;
+            amp_outs(j, i) = maxP1_A_mag;
             if(maxP1_A_mag < 0)
                 disp(maxP1_A_mag);
             end
             
 %             semilogx(frequencies, amp_out);
-            phase_out(i) = wrapToPi(angle(Y_A(maxA_ind)) - angle(Y_B(maxA_ind)))*180/pi;
+            phase_outs(j, i) = wrapToPi(angle(Y_A(maxA_ind)) - angle(Y_B(maxA_ind)))*180/pi;
             if maxA_ind ~= maxB_ind
                 disp("****************Frequency mismatch A and B****************")
                 disp(abs(angle(Y_B(maxB_ind)) - angle(Y_A(maxA_ind)))*180/pi);
@@ -239,77 +279,89 @@ try
                 disp("****************Potential frequency mismatch****************");
                 disp([freq_index, maxA_ind]);
             end
+%             pause(0.5);
         end
         set(deviceObj.Output(1), 'State', 'off');
         
+        amp_out = amp_outs(j,:);
+        phase_out = phase_outs(j,:);
         save(strcat(results_folder_name,'/', out_file, '.mat'), 'frequencies', 'amp_out', 'phase_out');
-        set(0, 'DefaultAxesFontSize', 16);
-        figure;
-        subplot(2,1,1);
-        loglog(frequencies, amp_out);
-        title(out_file, 'Interpreter', 'None');
-    %     title('Frequency Response');
-        ylim([min(amp_out)/1.2 max(amp_out)*1.2]);
-        xlim([0 50000]);
-        ylabel('Amplitude (mV)');
-        xlabel('Frequency (Hz)');
 
-        subplot(2,1,2);
-        semilogx(frequencies, phase_out);
-    %     title('Phase Response');
-        ylim([-180 180]);
-        xlim([0 50000]);
-        ylabel('Phase (degrees)');
-        xlabel('Frequency (Hz)');
-
-    %     subplot(3,1,3);
-    %     loglog(frequencies, mag_out);
-
-        fullfig(gcf);
-        savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
-        exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
+        %Frequency Response
+%         set(0, 'DefaultAxesFontSize', 16);
+%         figure;
+%         subplot(2,1,1);
+%         loglog(frequencies, amp_out);
+%         title(out_file, 'Interpreter', 'None');
+%     %     title('Frequency Response');
+%         ylim([min(amp_out)/1.2 max(amp_out)*1.2]);
+%         xlim([0 50000]);
+%         ylabel('Amplitude (mV)');
+%         xlabel('Frequency (Hz)');
+% 
+%         subplot(2,1,2);
+%         semilogx(frequencies, phase_out);
+%     %     title('Phase Response');
+%         ylim([-180 180]);
+%         xlim([0 50000]);
+%         ylabel('Phase (degrees)');
+%         xlabel('Frequency (Hz)');
+% 
+%         fullfig(gcf);
+%         savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+%         exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
    
     end
-    
-%     figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture with FFT', ...
-%         'NumberTitle','off');
-% 
-%     % Calculate time (nanoseconds) and convert to milliseconds
-%     % Use |timeIntervalNanoseconds| output from the |ps5000aGetTimebase2()|
-%     % function or calculate it using the main Programmer's Guide.
-%     % Take into account the downsampling ratio used.
-% 
-%     timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
-%     timeMs = timeNs / 1e6;
-% 
-%     % Channel A
-%     chAAxes = subplot(2,1,1); 
-%     plot(chAAxes, timeMs, chA, timeMs, chB);
-%     ylim(chAAxes, [-1500 1500]); % Adjust vertical axis for signal
-% 
-%     title(chAAxes, 'Block Data Acquisition');
-%     xlabel(chAAxes, 'Time (ms)');
-%     ylabel(chAAxes, 'Voltage (mV)');
-%     grid(chAAxes, 'on');
-%     legend(chAAxes, 'Channel A', 'Channel B');
-% 
-%     
-% 
-%     chAFFTAxes = subplot(2,1,2);
-%     semilogx(chAFFTAxes, f, P1_A(1:n/2), f, P1_B(1:n/2)); 
-%     xlim([0 50000]);
-% 
-%     title(chAFFTAxes, 'Single-Sided Amplitude Spectrum of y(t)');
-%     xlabel(chAFFTAxes, 'Frequency (Hz)');
-%     ylabel(chAFFTAxes, '|Y(f)|');
-%     grid(chAFFTAxes, 'on');
-% 
-%     [magA, IdxA] = max(abs(2*Y_A)/n);
-%     [magB, IdxB] = max(abs(2*Y_B)/n);
-%     
-%     [magA angle(Y_A(IdxA))]
-%     [magB angle(Y_B(IdxB))]
 
+    %Final plot (AC Response)
+%     set(0, 'DefaultAxesFontSize', 16);
+%     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", pressure_atm, "_5mW_AC");
+%     amps = AMP_MW/2; %to make amplitude instead of pp
+%     figure;
+%     plot(AMP_MW/2, amp_outs);
+%     legend(num2cell(frequencies+" Hz"), "Location", "northwest");
+%     title(out_file, 'Interpreter', 'None');
+%     ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
+%     xlim([0 max(AMP_MW/2)+1]);
+%     ylabel('Output Amplitude (mV)');
+%     xlabel('Input Amplitude (mW)');
+%     
+%     fullfig(gcf);
+%     savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+%     exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
+    
+    %Final plot (DC Response)
+%     set(0, 'DefaultAxesFontSize', 16);
+%     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", PRESSURE_ATM, "1mWpp_DC");
+%     figure;
+%     plot(DC_MW, amp_outs);
+%     legend(num2cell(frequencies+" Hz"), "Location", "northwest");
+%     title(out_file, 'Interpreter', 'None');
+%     ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
+%     xlim([0 max(DC_MW)+1]);
+%     ylabel('Output Amplitude (mV)');
+%     xlabel('DC Power (mW)');
+%     
+%     fullfig(gcf);
+%     savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+%     exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
+
+%Final plot (Pressure Response)
+    set(0, 'DefaultAxesFontSize', 16);
+    out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", LABELS(1), "_Pressure");
+    figure;
+    plot(PRESSURES, amp_outs);
+    legend(num2cell(frequencies+" Hz"), "Location", "northwest");
+    title(out_file, 'Interpreter', 'None');
+    ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
+    xlim([0 1]);
+    ylabel('Output Amplitude (mV)');
+    xlabel('Pressure (atm)');
+    
+    fullfig(gcf);
+    savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+    exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
+    
     pico_deinit;
     tek_deinit;
 
