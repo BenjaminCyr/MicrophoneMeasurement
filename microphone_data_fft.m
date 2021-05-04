@@ -11,40 +11,43 @@ LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
 WAIT_FOR_USER = false;
 
-DEVICE = "VM03";
+DEVICE = "SPA03";
 LIGHT_WAVELENGTH = "450nm";
 
 
 
 %[0.5 1 1.5 2 3 4 5]
-%[0.927 0.964 1 1.036 1.106 1.176 1.246]
+%[0.925 0.964 1 1.038 1.110 1.184 1.256]
+AMPLITUDE_1MW = 0.072;
+DC_2MW = 1.038;
+DC_5MW = 1.256;
 
 %Frequency RESPONSE
 % PRESSURES = [1];
-% AMPLITUDES = [0.070 0.140];
-% OFFSETS = [1.246 1.246];
+% AMPLITUDES = [AMPLITUDE_1MW 2*AMPLITUDE_1MW];
+% OFFSETS = [DC_5MW DC_5MW];
 % LABELS = ["5mW_1mWpp", "5mW_2mWpp"];
 
 
 %AC RESPONSE
 % PRESSURES = [1];
-% AMP_MW = 0.75:0.25:4;
-% AMPLITUDES = AMP_MW*0.070;
-% OFFSETS = 1.246*ones(1, length(AMPLITUDES));
-% LABELS = "5mW_" + AMP_MW + "mWpp";
+% AMP_MW = 0.5:0.25:5;
+% AMPLITUDES = 2*AMP_MW*AMPLITUDE_1MW;
+% OFFSETS = DC_5MW*ones(1, length(AMPLITUDES));
+% LABELS = "5mW_" + 2*AMP_MW + "mWpp";
 
 %DC RESPONSE
 % PRESSURES = [1];
 % DC_MW = 1:0.25:5;
-% OFFSETS = 1.036+(DC_MW-2)*0.070;
-% AMPLITUDES = 0.070*ones(1, length(OFFSETS));
-% LABELS = DC_MW + "mW_1mWpp";
+% OFFSETS = DC_2MW +(DC_MW-2)*AMPLITUDE_1MW;
+% AMPLITUDES = 2*AMPLITUDE_1MW*ones(1, length(OFFSETS));
+% LABELS = DC_MW + "mW_2mWpp";
 
 %PRESSURE RESPONSE
 WAIT_FOR_USER = true;
 PRESSURES = 0.1:0.1:1;
-AMPLITUDES = 2*0.070*ones(1, length(PRESSURES));
-OFFSETS = 1.246*ones(1, length(PRESSURES));
+AMPLITUDES = 2*AMPLITUDE_1MW*ones(1, length(PRESSURES));
+OFFSETS = DC_5MW*ones(1, length(PRESSURES));
 LABELS = repmat("5mW_2mWpp", 1, length(PRESSURES));
 
 % AMPLITUDES = [0.078 0.156 0.156];
@@ -66,7 +69,7 @@ LABELS = repmat("5mW_2mWpp", 1, length(PRESSURES));
 NUM_TESTS = length(LABELS);
 START_INDEX = 1;
 
-SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
+SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_20MV;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SAMPLING_FREQUENCY = 320000; %Hz for Analog Mics
 % SAMPLING_FREQUENCY = 12500000; %Hz for Digital Mics
@@ -123,6 +126,9 @@ try
     amp_outs = zeros(NUM_TESTS, length(frequencies));
 %     mag_out = zeros(NUM_TESTS, length(frequencies));
     phase_outs = zeros(NUM_TESTS, length(frequencies));
+    
+    set(deviceObj.Output(1), 'State', 'on');
+    pause(2);
     for j = START_INDEX:START_INDEX+NUM_TESTS-1
         i = 0;
         if length(PRESSURES) < 2
@@ -157,16 +163,13 @@ try
         
         close all;
         
-        out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", LABELS(j), "_", PRESSURE_ATM);
+        out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", LABELS(j), "_", pressure_atm);
         if ~exist(strcat('./Output/data/', DEVICE), 'dir')
             mkdir(strcat('./Output/data/', DEVICE));
         end
         if ~exist(strcat('./Output/data/', DEVICE, '/', out_file), 'dir')
             mkdir(strcat('./Output/data/', DEVICE, '/', out_file));
         end
-
-        set(deviceObj.Output(1), 'State', 'on');
-        pause(0.5);
 
         for i = 1:length(frequencies)
             set_fgen(deviceObj, frequencies(i), AMPLITUDES(j), OFFSETS(j));
@@ -281,8 +284,7 @@ try
             end
 %             pause(0.5);
         end
-        set(deviceObj.Output(1), 'State', 'off');
-        
+                
         amp_out = amp_outs(j,:);
         phase_out = phase_outs(j,:);
         save(strcat(results_folder_name,'/', out_file, '.mat'), 'frequencies', 'amp_out', 'phase_out');
@@ -293,7 +295,6 @@ try
 %         subplot(2,1,1);
 %         loglog(frequencies, amp_out);
 %         title(out_file, 'Interpreter', 'None');
-%     %     title('Frequency Response');
 %         ylim([min(amp_out)/1.2 max(amp_out)*1.2]);
 %         xlim([0 50000]);
 %         ylabel('Amplitude (mV)');
@@ -301,7 +302,6 @@ try
 % 
 %         subplot(2,1,2);
 %         semilogx(frequencies, phase_out);
-%     %     title('Phase Response');
 %         ylim([-180 180]);
 %         xlim([0 50000]);
 %         ylabel('Phase (degrees)');
@@ -313,16 +313,16 @@ try
    
     end
 
+    set(deviceObj.Output(1), 'State', 'off');
     %Final plot (AC Response)
 %     set(0, 'DefaultAxesFontSize', 16);
 %     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", pressure_atm, "_5mW_AC");
-%     amps = AMP_MW/2; %to make amplitude instead of pp
 %     figure;
-%     plot(AMP_MW/2, amp_outs);
+%     plot(AMP_MW, amp_outs);
 %     legend(num2cell(frequencies+" Hz"), "Location", "northwest");
 %     title(out_file, 'Interpreter', 'None');
 %     ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
-%     xlim([0 max(AMP_MW/2)+1]);
+%     xlim([0 max(AMP_MW)+1]);
 %     ylabel('Output Amplitude (mV)');
 %     xlabel('Input Amplitude (mW)');
 %     
@@ -332,7 +332,7 @@ try
     
     %Final plot (DC Response)
 %     set(0, 'DefaultAxesFontSize', 16);
-%     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", PRESSURE_ATM, "1mWpp_DC");
+%     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", pressure_atm, "_2mWpp_DC");
 %     figure;
 %     plot(DC_MW, amp_outs);
 %     legend(num2cell(frequencies+" Hz"), "Location", "northwest");
