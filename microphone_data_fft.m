@@ -11,16 +11,16 @@ LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
 WAIT_FOR_USER = false;
 
-DEVICE = "SPA03";
+DEVICE = "SPU03";
 LIGHT_WAVELENGTH = "450nm";
 
 
 
 %[0.5 1 1.5 2 3 4 5]
-%[0.925 0.964 1 1.038 1.110 1.184 1.256]
-AMPLITUDE_1MW = 0.072;
-DC_2MW = 1.038;
-DC_5MW = 1.256;
+%[0.925 0.964 1 1.048 1.126 1.202 1.280]
+AMPLITUDE_1MW = 0.076;
+DC_2MW = 1.048;
+DC_5MW = 1.280;
 
 %Frequency RESPONSE
 % PRESSURES = [1];
@@ -30,11 +30,11 @@ DC_5MW = 1.256;
 
 
 %AC RESPONSE
-% PRESSURES = [1];
-% AMP_MW = 0.5:0.25:5;
-% AMPLITUDES = 2*AMP_MW*AMPLITUDE_1MW;
-% OFFSETS = DC_5MW*ones(1, length(AMPLITUDES));
-% LABELS = "5mW_" + 2*AMP_MW + "mWpp";
+PRESSURES = [1];
+AMP_MW = 0.5:0.25:5;
+AMPLITUDES = 2*AMP_MW*AMPLITUDE_1MW;
+OFFSETS = DC_5MW*ones(1, length(AMPLITUDES));
+LABELS = "5mW_" + 2*AMP_MW + "mWpp";
 
 %DC RESPONSE
 % PRESSURES = [1];
@@ -44,11 +44,11 @@ DC_5MW = 1.256;
 % LABELS = DC_MW + "mW_2mWpp";
 
 %PRESSURE RESPONSE
-WAIT_FOR_USER = true;
-PRESSURES = 0.1:0.1:1;
-AMPLITUDES = 2*AMPLITUDE_1MW*ones(1, length(PRESSURES));
-OFFSETS = DC_5MW*ones(1, length(PRESSURES));
-LABELS = repmat("5mW_2mWpp", 1, length(PRESSURES));
+% WAIT_FOR_USER = true;
+% PRESSURES = 0.1:0.1:1;
+% AMPLITUDES = 2*AMPLITUDE_1MW*ones(1, length(PRESSURES));
+% OFFSETS = DC_5MW*ones(1, length(PRESSURES));
+% LABELS = repmat("5mW_2mWpp", 1, length(PRESSURES));
 
 % AMPLITUDES = [0.078 0.156 0.156];
 % OFFSETS = [2.662 2.738 2.974];
@@ -69,7 +69,7 @@ LABELS = repmat("5mW_2mWpp", 1, length(PRESSURES));
 NUM_TESTS = length(LABELS);
 START_INDEX = 1;
 
-SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_20MV;
+SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_500MV;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SAMPLING_FREQUENCY = 320000; %Hz for Analog Mics
 % SAMPLING_FREQUENCY = 12500000; %Hz for Digital Mics
@@ -315,20 +315,20 @@ try
 
     set(deviceObj.Output(1), 'State', 'off');
     %Final plot (AC Response)
-%     set(0, 'DefaultAxesFontSize', 16);
-%     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", pressure_atm, "_5mW_AC");
-%     figure;
-%     plot(AMP_MW, amp_outs);
-%     legend(num2cell(frequencies+" Hz"), "Location", "northwest");
-%     title(out_file, 'Interpreter', 'None');
-%     ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
-%     xlim([0 max(AMP_MW)+1]);
-%     ylabel('Output Amplitude (mV)');
-%     xlabel('Input Amplitude (mW)');
-%     
-%     fullfig(gcf);
-%     savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
-%     exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
+    set(0, 'DefaultAxesFontSize', 16);
+    out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", pressure_atm, "_5mW_AC");
+    figure;
+    plot(AMP_MW, amp_outs);
+    legend(num2cell(frequencies+" Hz"), "Location", "northwest");
+    title(out_file, 'Interpreter', 'None');
+    ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
+    xlim([0 max(AMP_MW)+1]);
+    ylabel('Output Amplitude (mV)');
+    xlabel('Input Amplitude (mW)');
+    
+    fullfig(gcf);
+    savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+    exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
     
     %Final plot (DC Response)
 %     set(0, 'DefaultAxesFontSize', 16);
@@ -347,20 +347,20 @@ try
 %     exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
 
 %Final plot (Pressure Response)
-    set(0, 'DefaultAxesFontSize', 16);
-    out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", LABELS(1), "_Pressure");
-    figure;
-    plot(PRESSURES, amp_outs);
-    legend(num2cell(frequencies+" Hz"), "Location", "northwest");
-    title(out_file, 'Interpreter', 'None');
-    ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
-    xlim([0 1]);
-    ylabel('Output Amplitude (mV)');
-    xlabel('Pressure (atm)');
-    
-    fullfig(gcf);
-    savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
-    exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
+%     set(0, 'DefaultAxesFontSize', 16);
+%     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", LABELS(1), "_Pressure");
+%     figure;
+%     plot(PRESSURES, amp_outs);
+%     legend(num2cell(frequencies+" Hz"), "Location", "northwest");
+%     title(out_file, 'Interpreter', 'None');
+%     ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
+%     xlim([0 1]);
+%     ylabel('Output Amplitude (mV)');
+%     xlabel('Pressure (atm)');
+%     
+%     fullfig(gcf);
+%     savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+%     exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
     
     pico_deinit;
     tek_deinit;
