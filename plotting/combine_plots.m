@@ -6,10 +6,11 @@ GREEN = [0 1 0];
 BLUE = [0 0 1];
 ORANGE = [1 0.5 0];
 
-DEVICES = ["SPU03", "CMM03", "SPA03", "VM03"];
-% FILES = ["SPU03_450nm__1atm_AC", "CMM03_450nm_1atmatm_5mW_AC", "SPA03_450nm_1atmatm_5mW_AC", "VM03_450nm_1atm_5mW_AC"];
-% FILES = ["SPU03_450nm_1atm_5mW_AC", "CMM03_450nm_1atm_5mW_AC", "SPA03_450nm_1atm_5mW_AC", "VM03_450nm_1atm_5mW_AC"];
-FILES = ["SPU03_450nm_5mW_2mWpp_Pressure", "CMM03_450nm_5mW_2mWpp_Pressure", "SPA03_450nm_5mW_2mWpp_Pressure", "VM03_450nm_5mW_2mWpp_Pressure"];
+DEVICES = ["SPU03", "CMM03", "SPA04", "VM03"];
+% FILES = ["SPU03_450nm__1atm_AC", "CMM03_450nm_1atmatm_5mW_AC", "SPA04_450nm_1atmatm_5mW_AC", "VM03_450nm_1atm_5mW_AC"];
+% FILES = ["SPU03_450nm_1atm_5mW_AC", "CMM03_450nm_1atm_5mW_AC", "SPA04_450nm_1atm_5mW_AC", "VM03_450nm_1atm_5mW_AC"];
+% FILES = ["SPU03_450nm_1atm_2mWpp_DC", "CMM03_450nm_1atm_2mWpp_DC", "SPA04_450nm_1atm_2mWpp_DC", "VM03_450nm_1atm_2mWpp_DC"];
+FILES = ["SPU03_450nm_5mW_2mWpp_Pressure", "CMM03_450nm_5mW_2mWpp_Pressure", "SPA04_450nm_5mW_2mWpp_Pressure", "VM03_450nm_5mW_2mWpp_Pressure"];
 COEFFICIENTS = [1, 1, 1, 1];
 LINES_STYLE_ORDER = {'-', '--', '-.', ':'};
 COLOR_ORDER = [RED; GREEN; BLUE; ORANGE];% BLUE];

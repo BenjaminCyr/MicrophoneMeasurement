@@ -1,7 +1,8 @@
-% fig = openfig(strcat('Output/figs/','ADMP01_638nm_5mW_1mWpp_1atm','.fig'));
+% fig = openfig(strcat('../Output/figs/SPA04/','SPA04_450nm_5mW_2mWpp_1atm','.fig'));
 % amp_out = fig.Children(2).Children.YData;
 % phase_out = fig.Children(1).Children.YData;
-% save('./Output/results/ADMP01_638nm_5mW_1mWpp_1atm.mat', 'amp_out', 'phase_out', 'frequencies')
+% save('../Output/results/SPA04/SPA04_450nm_5mW_2mWpp_1atm.mat', 'amp_out', 'phase_out', 'frequencies')
+
 out_fig_path = strcat('../Output/figs/analysis/', out_folder);
 if ~exist(out_fig_path, 'dir')
     mkdir(out_fig_path);
