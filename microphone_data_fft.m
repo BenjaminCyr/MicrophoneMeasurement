@@ -9,24 +9,27 @@ PS5000aConfig;
 SAVE_DATA = true;
 LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
-WAIT_FOR_USER = false;
+WAIT_FOR_USER = true;
+FLIPB = true;
 
-DEVICE = "SPA04";
-LIGHT_WAVELENGTH = "450nm";
+DEVICE = "SPU01_DPKG_TEST";
+LIGHT_WAVELENGTH = "520nm";
 
 
 
 %[0.5 1 1.5 2 3 4 5]
 %[0.925 0.964 1 1.048 1.126 1.202 1.280]
 % 450nm
-AMPLITUDE_1MW = 0.090;
-DC_2MW = 1.092;
-DC_5MW = 1.364;
+% AMPLITUDE_1MW = 0.090;
+% DC_2MW = 1.092;
+% DC_5MW = 1.364;
+% DC_2MW = 0.6;
+% DC_5MW = 0.6;
 
 %520nm
-% AMPLITUDE_1MW = 0.140;
-% DC_2MW = 2.066;
-% DC_5MW = 2.486;
+AMPLITUDE_1MW = 0.100;
+DC_2MW = 1.064; 2.066;
+DC_5MW = 1.48; 2.486;
 
 %638nm
 % AMPLITUDE_1MW = 0.076;
@@ -37,9 +40,9 @@ DC_5MW = 1.364;
 
 %Frequency RESPONSE
 PRESSURES = [1];
-AMPLITUDES = [AMPLITUDE_1MW 2*AMPLITUDE_1MW];
-OFFSETS = [DC_5MW DC_5MW];
-LABELS = ["5mW_1mWpp", "5mW_2mWpp"];
+AMPLITUDES = [AMPLITUDE_1MW]; % 2*AMPLITUDE_1MW];
+OFFSETS = [DC_5MW]; % DC_5MW];
+LABELS = ["5mW_1mWpp"]; %, "5mW_2mWpp"];
 
 
 %AC RESPONSE
@@ -221,6 +224,9 @@ try
 %             n = 2 ^ nextpow2(L); % Next power of 2 from length of chA
             chA = chA - mean(chA);
             chB = chB - mean(chB);
+            if FLIPB
+                chB = -chB;
+            end
             n = length(chA);
             Fs = 1 / (timeIntervalNanoseconds * 1e-9);
             f = Fs*(0:(n/2))/n;
