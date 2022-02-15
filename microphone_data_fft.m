@@ -10,13 +10,16 @@ SAVE_DATA = true;
 LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
 WAIT_FOR_USER = true;
-FLIPB = true;
+FLIPB = false;
 
-DEVICE = "CMM02_DPKG_TAPE_TEST";
-LIGHT_WAVELENGTH = "520nm";
+DEVICE = "VM02_DPKG_SPKR";
+LIGHT_WAVELENGTH = "0nm";
 
 
-
+% Speaer
+AMPLITUDE_1MW = 0.100;
+DC_2MW = 0;
+DC_5MW = 0;
 %[0.5 1 1.5 2 3 4 5]
 %[0.925 0.964 1 1.048 1.126 1.202 1.280]
 % 450nm
@@ -27,9 +30,9 @@ LIGHT_WAVELENGTH = "520nm";
 % DC_5MW = 0.6;
 
 %520nm
-AMPLITUDE_1MW = 0.100;
-DC_2MW = 1.064; 2.066;
-DC_5MW = 1.48; 2.486;
+% AMPLITUDE_1MW = 0.100;
+% DC_2MW = 1.064; 2.066;
+% DC_5MW = 1.48; 2.486;
 
 %638nm
 % AMPLITUDE_1MW = 0.076;
@@ -90,7 +93,7 @@ SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SAMPLING_FREQUENCY = 320000; %Hz for Analog Mics
 % SAMPLING_FREQUENCY = 12500000; %Hz for Digital Mics
 SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
-NUM_FREQS = 100;
+NUM_FREQS = 300;
 START_FREQ = 20;
 END_FREQ = 30000;
 % NUM_FREQS = 4;
@@ -189,6 +192,7 @@ try
 
         for i = 1:length(frequencies)
             set_fgen(deviceObj, frequencies(i), AMPLITUDES(j), OFFSETS(j));
+            %pause(0.5);
             pico_capture;
             pico_get_data;
 
