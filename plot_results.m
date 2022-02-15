@@ -2,9 +2,9 @@ close all;
 
 
 folder = "./Output/results";
-out_file = "SPU_ALL_Comparison5mW";
-DEVICES = ["SPU01_DPKG_TAPE", "SPU01_DPKG_TEST"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
-CUSTOM_FILES = ["SPU03" "SPU03_520nm_TEST_5mW_1mWpp_1atm"; "SPU03_TAPE" "SPU03_TAPE_520nm_TEST_5mW_1mWpp_1atm";];
+out_file = "CMM_Comparison5mW";
+DEVICES = ["CMM03_TEST", "CMM03_TAPE", "CMM02_DPKG_TEST", "CMM02_DPKG_TAPE_TEST"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
+CUSTOM_FILES = [];
 
 OUT_COEFFICIENTS = []; % To account for Vpp vs mV Amplitude
 LIGHT_FREQUENCIES = ["520nm"];
