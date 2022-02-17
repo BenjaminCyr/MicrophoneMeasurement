@@ -2,17 +2,17 @@ close all;
 
 
 folder = "./Output/results";
-out_file = "CMM_Comparison5mW";
-DEVICES = ["CMM03_TEST", "CMM03_TAPE", "CMM02_DPKG_TEST", "CMM02_DPKG_TAPE_TEST"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
+out_file = "Speaker";
+DEVICES = ["CMM02_SPKR"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
 CUSTOM_FILES = [];
 
 OUT_COEFFICIENTS = []; % To account for Vpp vs mV Amplitude
-LIGHT_FREQUENCIES = ["520nm"];
+LIGHT_FREQUENCIES = ["0nm"];
 DC_POWERS = ["5mW"];
 AC_POWERS = ["1mWpp"];
 PRESSURES = ["1atm"];
 
-NUM_FREQS = 100;
+NUM_FREQS = 300;
 COMBINE_OUTPUTS = [];% ["SPU02_DPKG_MEMFRONT", "SPU02_DPKG_ASICTOP_450nm_5mW_0.33mWpp_1atm"];%["VM02_DPKG_MEMFRONT","VM02_DPKG_ASICTOP"];
 COMBINE_COEFFICIENTS = [ones(1,NUM_FREQS); logspace(log10(10), log10(0.01),NUM_FREQS)];
 
@@ -59,7 +59,7 @@ for dev = DEVICES
                     load(strcat(folder,'/', dev, '/', data_name,'.mat'))
 
                     amp_outs(i,:) = amp_out*OUT_COEFFICIENTS(i);
-                    phase_outs(i,:) = phase_out;
+                    phase_outs(i,:) = unwrap(pi/180*phase_out)*180/pi + 360*0.33*frequencies/343; %phase_out;
                     
                     if ~isempty(COMBINE_OUTPUTS) && ismember(dev, COMBINE_OUTPUTS)
                         complex_vals = COMBINE_COEFFICIENTS(k,:).*amp_outs(i,:).*exp(1j*deg2rad(phase_out));
@@ -109,7 +109,7 @@ title(out_file, 'Interpreter', 'none');
 
 subplot(2,1,2);
 semilogx(frequencies, phase_outs, 'LineWidth', 1, 'MarkerSize', 5);
-ylim([-180 180]);
+ylim([-1000 1000]);% ylim([-180 180]);
 
 ax = gca;
 ax.LineStyleOrder = LINES_STYLE_ORDER;
