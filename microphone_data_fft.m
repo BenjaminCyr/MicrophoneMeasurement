@@ -12,7 +12,7 @@ NUM_SAVED_FILES = 5;
 WAIT_FOR_USER = true;
 FLIPB = false;
 
-DEVICE = "VM02_DPKG_SPKR";
+DEVICE = "CMM02_SPKR2";
 LIGHT_WAVELENGTH = "0nm";
 
 
@@ -93,7 +93,7 @@ SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SAMPLING_FREQUENCY = 320000; %Hz for Analog Mics
 % SAMPLING_FREQUENCY = 12500000; %Hz for Digital Mics
 SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
-NUM_FREQS = 300;
+NUM_FREQS = 100;
 START_FREQ = 20;
 END_FREQ = 30000;
 % NUM_FREQS = 4;
@@ -192,7 +192,7 @@ try
 
         for i = 1:length(frequencies)
             set_fgen(deviceObj, frequencies(i), AMPLITUDES(j), OFFSETS(j));
-            %pause(0.5);
+            pause; %(0.5);
             pico_capture;
             pico_get_data;
 

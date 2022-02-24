@@ -2,12 +2,12 @@ close all;
 
 
 folder = "./Output/results";
-out_file = "CMM_Comparison5mW";
-DEVICES = ["CMM03_TEST", "CMM03_TAPE", "CMM02_DPKG_TEST", "CMM02_DPKG_TAPE_TEST"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
+out_file = "CMM_SPKR";
+DEVICES = ["CMM02_SPKR2"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
 CUSTOM_FILES = [];
 
 OUT_COEFFICIENTS = []; % To account for Vpp vs mV Amplitude
-LIGHT_FREQUENCIES = ["520nm"];
+LIGHT_FREQUENCIES = ["0nm"];
 DC_POWERS = ["5mW"];
 AC_POWERS = ["1mWpp"];
 PRESSURES = ["1atm"];
