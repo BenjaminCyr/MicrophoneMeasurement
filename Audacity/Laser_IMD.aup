@@ -1,0 +1,34 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="Laser_IMD_data" version="1.3.0" audacityversion="2.3.2" sel0="7.7090249433" sel1="13.4559637188" selLow="839.1608886719" selHigh="3076.9230957031" vpos="0" h="5.6888888889" zoom="86.1328125000" rate="44100.0" snapto="off" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags/>
+	<wavetrack name="Audio Track" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="250907">
+				<waveblock start="0">
+					<simpleblockfile filename="e080879f.au" len="250907" min="-0.338135" max="0.243713" rms="0.055233"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="5.68950113" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="332928">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808c79.au" len="262144" min="-0.275116" max="0.207123" rms="0.04309"/>
+				</waveblock>
+				<waveblock start="262144">
+					<simpleblockfile filename="e08080c4.au" len="70784" min="-0.256989" max="0.234985" rms="0.048573"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="13.23888889" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="258304">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808e5d.au" len="258304" min="-0.417419" max="0.312073" rms="0.05713"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>
