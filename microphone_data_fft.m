@@ -10,16 +10,17 @@ SAVE_DATA = true;
 LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
 WAIT_FOR_USER = true;
-FLIPB = false;
+FLIPB = true;
 
-DEVICE = "CMM02_SPKR2";
-LIGHT_WAVELENGTH = "0nm";
+DEVICE = "SPU03_Distorted";
+LIGHT_WAVELENGTH = "520nm";
 
 
 % Speaer
 AMPLITUDE_1MW = 0.100;
+DC_0_1MW = 0.824;
 DC_2MW = 0;
-DC_5MW = 0;
+DC_5MW = 1.014;
 %[0.5 1 1.5 2 3 4 5]
 %[0.925 0.964 1 1.048 1.126 1.202 1.280]
 % 450nm
@@ -43,9 +44,9 @@ DC_5MW = 0;
 
 %Frequency RESPONSE
 PRESSURES = [1];
-AMPLITUDES = [AMPLITUDE_1MW]; % 2*AMPLITUDE_1MW];
-OFFSETS = [DC_5MW]; % DC_5MW];
-LABELS = ["5mW_1mWpp"]; %, "5mW_2mWpp"];
+AMPLITUDES = [AMPLITUDE_1MW, AMPLITUDE_1MW]; % 2*AMPLITUDE_1MW];
+OFFSETS = [DC_0_1MW, DC_5MW]; % DC_5MW];
+LABELS = ["0.1mW_2mWpp", "5mW_2mWpp"]; %, "5mW_2mWpp"];
 
 
 %AC RESPONSE
@@ -192,7 +193,7 @@ try
 
         for i = 1:length(frequencies)
             set_fgen(deviceObj, frequencies(i), AMPLITUDES(j), OFFSETS(j));
-            pause; %(0.5);
+%             pause; %(0.5);
             pico_capture;
             pico_get_data;
 
