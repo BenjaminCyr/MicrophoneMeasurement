@@ -2,21 +2,21 @@ close all;
 
 
 folder = "./Output/results";
-out_file = "SPU04_10X_DPKG";
-DEVICES = ["SPU04_10X_DPKG_MEMBACK", "SPU04_10X_DPKG_MEMBACK_TAPE", "SPU04_10X_DPKG_MEMFRONT_TAPE", "SPU04_10X_DPKG_MEMBACK_HOLE", "SPU04_10X_DPKG_MEMBACK_HOLE_TAPE"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
+out_file = "SPU_10X_LowPower";
+DEVICES = ["SPU_10X" "SPU_10X_0.8V" "SPU_10X_1V"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
 CUSTOM_FILES = [];
 %                 "SPU03_DPKG_MEMBACK", "SPU03_DPKG_MEMBACK_520nm_0.1mW_1mWpp_1atm";
 %                 "SPU03_DPKG_MEMBACK_Unfocused", "SPU03_DPKG_MEMBACK_Unfocused_520nm_0.1mW_2mWpp_1atm"];
 
 OUT_COEFFICIENTS = []; % To account for Vpp vs mV Amplitude
-LIGHT_FREQUENCIES = ["450nm"];
-DC_POWERS = ["5mW"];
+LIGHT_FREQUENCIES = ["520nm"];
+DC_POWERS = ["0.1mW" "5mW"];
 AC_POWERS = ["2mWpp"];
 PRESSURES = ["1atm"];
 
 NUM_FREQS = 100;
 COMBINE_OUTPUTS = [];% ["SPU02_DPKG_MEMFRONT", "SPU02_DPKG_ASICTOP_450nm_5mW_0.33mWpp_1atm"];%["VM02_DPKG_MEMFRONT","VM02_DPKG_ASICTOP"];
-COMBINE_COEFFICIENTS = [ones(1, NUM_FREQS); ones(1, NUM_FREQS)];%logspace(log10(10), log10(0.01),NUM_FREQS)];
+COMBINE_COEFFICIENTS = [-6*ones(1, NUM_FREQS); zeros(1, NUM_FREQS); ones(1, NUM_FREQS)];%logspace(log10(10), log10(0.01),NUM_FREQS)];
 
 % fig = openfig(strcat('Output/figs/','ADMP01_638nm_5mW_1mWpp_1atm','.fig'));
 % amp_out = fig.Children(2).Children.YData;
