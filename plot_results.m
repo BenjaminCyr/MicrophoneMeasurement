@@ -2,15 +2,15 @@ close all;
 
 
 folder = "./Output/results";
-out_file = "SPU_10X_LowPower";
-DEVICES = ["SPU_10X" "SPU_10X_0.8V" "SPU_10X_1V"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
+out_file = "SPU_MEMONLY";
+DEVICES = ["SPU05_40X_MEMONLY" "SPU05_40X_MEMBACK_HOLE" "SPU05_40X_MEMBACK_TRACE"];%, "SPU02_2_DPKG_MEMFRONT"];%, "ADMP01_DPKG_MEMFRONT"];
 CUSTOM_FILES = [];
 %                 "SPU03_DPKG_MEMBACK", "SPU03_DPKG_MEMBACK_520nm_0.1mW_1mWpp_1atm";
 %                 "SPU03_DPKG_MEMBACK_Unfocused", "SPU03_DPKG_MEMBACK_Unfocused_520nm_0.1mW_2mWpp_1atm"];
 
 OUT_COEFFICIENTS = []; % To account for Vpp vs mV Amplitude
 LIGHT_FREQUENCIES = ["520nm"];
-DC_POWERS = ["0.1mW" "5mW"];
+DC_POWERS = ["5mW"];
 AC_POWERS = ["2mWpp"];
 PRESSURES = ["1atm"];
 
