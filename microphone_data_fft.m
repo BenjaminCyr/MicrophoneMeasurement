@@ -9,10 +9,10 @@ PS5000aConfig;
 SAVE_DATA = true;
 LOW_PASS_FILTER = false;
 NUM_SAVED_FILES = 5;
-WAIT_FOR_USER = false;
+WAIT_FOR_USER = true;
 FLIPB = true;
 
-DEVICE = "SFH213FA_Photodiode";
+DEVICE = "VM3000_01_Journal";
 LIGHT_WAVELENGTH = "520nm";
 
 %[0.5 1 1.5 2 3 4 5]
@@ -29,10 +29,11 @@ LIGHT_WAVELENGTH = "520nm";
 % DC_5MW = 0.678;
 
 %520nm
-AMPLITUDE_1MW = 0.073;
-DC_0_1MW = 0.825;
-DC_2MW = 0.960;
-DC_5MW = 1.180;
+AMPLITUDE_1MW = 0.090;
+DC_0_5MW = 0.818;
+DC_1MW = 0.878;
+DC_2MW = 0.972;
+DC_5MW = 1.246;
 
 %638nm
 % AMPLITUDE_1MW = 0.076;
@@ -56,9 +57,11 @@ DC_5MW = 1.180;
 % LABELS = "5mW_" + 2*AMP_MW + "mWpp";
 
 %DC RESPONSE
-PRESSURES = [1];
-DC_MW = [0.1 0.2:0.2:2];
-OFFSETS = DC_0_1MW + (DC_MW-0.1)*AMPLITUDE_1MW;
+PRESSURES = [0.2];
+% DC_MW = [0];
+% OFFSETS = [0];
+DC_MW = [0.5 1 2 5];
+OFFSETS = [DC_0_5MW DC_1MW DC_2MW DC_5MW];
 AMPLITUDES = AMPLITUDE_1MW*ones(1, length(OFFSETS));
 LABELS = DC_MW + "mW_2mWpp";
 
@@ -90,7 +93,7 @@ START_INDEX = 1;
 
 SIGNAL_RANGE_A = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
 SIGNAL_RANGE_B = ps5000aEnuminfo.enPS5000ARange.PS5000A_200MV;
-SAMPLING_FREQUENCY = 320000; %Hz for Analog Mics
+SAMPLING_FREQUENCY = 500000; %Hz for Analog Mics
 % SAMPLING_FREQUENCY = 12500000; %Hz for Digital Mics
 SAMPLE_PERIOD = 1/SAMPLING_FREQUENCY;
 NUM_FREQS = 100;
@@ -337,6 +340,33 @@ try
     end
 
     set(deviceObj.Output(1), 'State', 'off');
+    
+    % Final Plot General
+    set(0, 'DefaultAxesFontSize', 16);
+    figure;
+    subplot(2,1,1);
+    loglog(frequencies, amp_outs);
+    title(out_file, 'Interpreter', 'None');
+    ylim([min(amp_outs, [], 'all')/1.2 max(amp_outs, [], 'all')*1.2]);
+    legend(num2cell(DC_MW+"mW"), "Location", "southwest");
+    xlim([0 50000]);
+    ylabel('Amplitude (mV)');
+    xlabel('Frequency (Hz)');
+
+    subplot(2,1,2);
+    semilogx(frequencies, phase_outs);
+    legend(num2cell(DC_MW+"mW"), "Location", "southwest");
+    ylim([-180 180]);
+    xlim([0 50000]);
+    ylabel('Phase (degrees)');
+    xlabel('Frequency (Hz)');
+
+    fullfig(gcf);
+    out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", pressure_atm, "_2mWpp_DC");
+    savefig(strcat(fig_folder_name,'/', out_file, '.fig'));
+    exportgraphics(gcf,strcat(png_folder_name,'/', out_file, '.png'),'Resolution',300) 
+
+
     %Final plot (AC Response)
 %     set(0, 'DefaultAxesFontSize', 16);
 %     out_file = strcat(DEVICE, "_", LIGHT_WAVELENGTH, "_", pressure_atm, "_5mW_AC");
