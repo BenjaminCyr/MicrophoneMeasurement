@@ -57,7 +57,7 @@ DC_5MW = 1.246;
 % LABELS = "5mW_" + 2*AMP_MW + "mWpp";
 
 %DC RESPONSE
-PRESSURES = [0.2];
+PRESSURES = [0.1];
 % DC_MW = [0];
 % OFFSETS = [0];
 DC_MW = [0.5 1 2 5];
