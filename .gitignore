@@ -1,3 +1,4 @@
 *.asv
 Output/data/
-VibData/Michigan_VibData/data
+VibData/Michigan_VibData/Output/data
+VibData/Boston_VibData
