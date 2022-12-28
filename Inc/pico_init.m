@@ -53,12 +53,14 @@ connect(ps5000aDeviceObj);
 % Find current power source
 [status.currentPowerSource] = invoke(ps5000aDeviceObj, 'ps5000aCurrentPowerSource');
 
-[status.setChA] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, ps5000aEnuminfo.enPS5000ARange.PS5000A_100MV, 0.0);
-[status.setChB] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, ps5000aEnuminfo.enPS5000ARange.PS5000A_100MV, 0.0);
+[status.setChA] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, SIGNAL_RANGE_A, 0.0);
+[status.setChB] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, SIGNAL_RANGE_B, 0.0);
     
+
 if (ps5000aDeviceObj.channelCount == PicoConstants.QUAD_SCOPE && status.currentPowerSource == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
     
-    [status.setChC] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', 2, 0, 1, 8, 0.0);
+    [status.setChC] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_C, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, SIGNAL_RANGE_C, 0.0);
+    %[status.setChC] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', 2, 0, 1, 8, 0.0);
     [status.setChD] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', 3, 0, 1, 8, 0.0);
     
 end
@@ -67,7 +69,7 @@ end
 %% Set device resolution
 
 % Max. resolution with 2 channels enabled is 15 bits.
-[status.setResolution, resolution] = invoke(ps5000aDeviceObj, 'ps5000aSetDeviceResolution', 15);
+[status.setResolution, resolution] = invoke(ps5000aDeviceObj, 'ps5000aSetDeviceResolution', 14);
 
 %% Verify timebase index and maximum number of samples
 % Use the |ps5000aGetTimebase2()| function to query the driver as to the
