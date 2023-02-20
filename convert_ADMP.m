@@ -1,6 +1,6 @@
 
 
-folder_name = "ADMP04";
+folder_name = "ADMP05_Final";
 results_folder = strcat("./Output/results/", folder_name, "/");
 files = dir(results_folder);
 
@@ -24,8 +24,13 @@ for ind = 3:length(files)
     load(strcat(results_folder, file_name));
     [~, name, ~] = fileparts(file_name);
     out_file = strcat(name, "_preamp");
+    
+    if isequal(size(amp_out), [100 2])
+       amp_out = amp_out(:,1); 
+       phase_out = phase_out(:,1);
+    end
 
-    in_signal = amp_out.*exp(1j*phase_out*pi/180);
+    in_signal = amp_out'.*exp(1j*phase_out'*pi/180);
 
     omegas = 2*pi*frequencies;
     Z1s = 1./omegas/1j/4.7e-6 + 1.5e3;
