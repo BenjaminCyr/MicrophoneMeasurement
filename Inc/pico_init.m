@@ -53,7 +53,7 @@ connect(ps5000aDeviceObj);
 % Find current power source
 [status.currentPowerSource] = invoke(ps5000aDeviceObj, 'ps5000aCurrentPowerSource');
 
-[status.setChA] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, SIGNAL_RANGE_A, 0.0);
+[status.setChA] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, SIGNAL_RANGE_As(1), 0.0);
 [status.setChB] = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B, PicoConstants.TRUE, ps5000aEnuminfo.enPS5000ACoupling.PS5000A_AC, SIGNAL_RANGE_B, 0.0);
     
 
