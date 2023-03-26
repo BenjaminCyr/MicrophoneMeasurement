@@ -85,16 +85,16 @@ folder = "./Output/results/";
 %              ["VM3000_01_Journal/VM3000_01_Journal_450nm_5mW_2mWpp_1atm", "VM3000_03/VM3000_03_1470nm_5mW_2mWpp_1atm"]};
 % 
 
-% out_file = "Combined IR";
-% FIG_FILES = {["CMM05_Final/CMM05_Final_1470nm_5mW_2mWpp_0.1atm" "CMM05_Final/CMM05_Final_1470nm_5mW_2mWpp_1atm"]
-%              ["SPU03_Final/SPU03_Final_1470nm_5mW_2mWpp_0.1atm" "SPU03_Final/SPU03_Final_1470nm_5mW_2mWpp_1atm"]
-%              ["ICS02_Final/ICS02_Final_1470nm_5mW_2mWpp_0.1atm" "ICS02_Final/ICS02_Final_1470nm_5mW_2mWpp_1atm"]
-%              ["ADMP05_Final_preamp/ADMP05_Final_1470nm_5mW_2mWpp_0.1atm_preamp" "ADMP05_Final_preamp/ADMP05_Final_1470nm_5mW_2mWpp_1atm_preamp"]
-%              ["SPA04_Final/SPA04_Final_1470nm_5mW_2mWpp_0.1atm" "SPA04_Final/SPA04_Final_1470nm_5mW_2mWpp_1atm"]
-%              ["SPH0641_03_Final/SPH0641_03_Final_1470nm_5mW_2mWpp_0.1atm" "SPH0641_03_Final/SPH0641_03_Final_1470nm_5mW_2mWpp_1atm"]
-%              ["VM1010_04_Final/VM1010_04_Final_1470nm_5mW_2mWpp_0.1atm" "VM1010_04_Final/VM1010_04_Final_1470nm_5mW_2mWpp_1atm"]
-%              ["VM3000_03_Final/VM3000_03_Final_1470nm_5mW_2mWpp_0.1atm" "VM3000_03_Final/VM3000_03_Final_1470nm_5mW_2mWpp_1atm"]};
-% titles = ["CMM3526", "SPU0410", "ICS41350", "ADMP401", "SPA1687", "SPH0641", "VM1010", "VM3000"];
+out_file = "Combined IR";
+FIG_FILES = {["CMM05_Final/CMM05_Final_1470nm_5mW_2mWpp_0.1atm" "CMM05_Final/CMM05_Final_1470nm_5mW_2mWpp_1atm"]
+             ["SPU03_Final/SPU03_Final_1470nm_5mW_2mWpp_0.1atm" "SPU03_Final/SPU03_Final_1470nm_5mW_2mWpp_1atm"]
+             ["ICS02_Final/ICS02_Final_1470nm_5mW_2mWpp_0.1atm" "ICS02_Final/ICS02_Final_1470nm_5mW_2mWpp_1atm"]
+             ["ADMP05_Final_preamp/ADMP05_Final_1470nm_5mW_2mWpp_0.1atm_preamp" "ADMP05_Final_preamp/ADMP05_Final_1470nm_5mW_2mWpp_1atm_preamp"]
+             ["SPA04_Final/SPA04_Final_1470nm_5mW_2mWpp_0.1atm" "SPA04_Final/SPA04_Final_1470nm_5mW_2mWpp_1atm"]
+             ["SPH0641_03_MemRight/SPH0641_03_MemRight_1470nm_5mW_2mWpp_0.1atm" "SPH0641_03_MemRight/SPH0641_03_MemRight_1470nm_5mW_2mWpp_1atm"]
+             ["VM1010_04_Final/VM1010_04_Final_1470nm_5mW_2mWpp_0.1atm" "VM1010_04_Final/VM1010_04_Final_1470nm_5mW_2mWpp_1atm"]
+             ["VM3000_03_Final/VM3000_03_Final_1470nm_5mW_2mWpp_0.1atm" "VM3000_03_Final/VM3000_03_Final_1470nm_5mW_2mWpp_1atm"]};
+titles = ["CMM3526", "SPU0410", "ICS41350", "ADMP401", "SPA1687", "SPH0641", "VM1010", "VM3000"];
 % 
 % out_file = "TDvsPV";
 % FIG_FILES = {["CMM05_Final/CMM05_Final_1470nm_5mW_2mWpp_1atm" "CMM05_Final/CMM05_Final_904nm_5mW_2mWpp_1atm" "CMM03_Journal/CMM03_Journal_638nm_5mW_2mWpp_1atm" "CMM03_Journal/CMM03_Journal_450nm_5mW_2mWpp_1atm"]
@@ -102,22 +102,24 @@ folder = "./Output/results/";
 %              ["ICS02_Final/ICS02_Final_1470nm_5mW_2mWpp_1atm" "ICS02_Final/ICS02_Final_904nm_0.2mW_0.2mWpp_1atm" "ICS01_Journal/ICS01_Journal_638nm_5mW_2mWpp_1atm" "ICS01_Journal/ICS01_Journal_450nm_5mW_2mWpp_1atm"]
 %              ["ADMP05_Final_preamp/ADMP05_Final_1470nm_5mW_2mWpp_1atm_preamp" "ADMP05_Final_preamp/ADMP05_Final_904nm_5mW_2mWpp_1atm_preamp" "ADMP01_Journal_preamp/ADMP01_Journal_638nm_5mW_2mWpp_1atm_preamp" "ADMP01_Journal_preamp/ADMP01_Journal_450nm_5mW_2mWpp_1atm_preamp"]
 %              ["SPA04_Final/SPA04_Final_1470nm_5mW_2mWpp_1atm" "SPA04_Final/SPA04_Final_904nm_5mW_2mWpp_1atm" "SPA04_Journal/SPA04_Journal_638nm_5mW_2mWpp_1atm" "SPA04_Journal/SPA04_Journal_450nm_5mW_2mWpp_1atm"]
-%              ["SPH0641_03_Final/SPH0641_03_Final_1470nm_5mW_2mWpp_1atm" "SPH0641_03_Final/SPH0641_03_Final_904nm_0.2mW_0.2mWpp_1atm" "SPH0641_01_Journal/SPH0641_01_Journal_638nm_5mW_2mWpp_1atm" "SPH0641_01_Journal/SPH0641_01_Journal_450nm_5mW_2mWpp_1atm"]
+%              ["SPH0641_03_MemRight/SPH0641_03_MemRight_1470nm_5mW_2mWpp_1atm" "SPH0641_03_Final/SPH0641_03_Final_904nm_0.2mW_0.2mWpp_1atm" "SPH0641_01_Journal/SPH0641_01_Journal_638nm_5mW_2mWpp_1atm" "SPH0641_01_Journal/SPH0641_01_Journal_450nm_5mW_2mWpp_1atm"]
 %              ["VM1010_04_Final/VM1010_04_Final_1470nm_5mW_2mWpp_1atm" "VM1010_04_Final/VM1010_04_Final_904nm_5mW_2mWpp_1atm" "VM04_Journal/VM04_Journal_638nm_5mW_2mWpp_1atm" "VM04_Journal/VM04_Journal_450nm_5mW_2mWpp_1atm"]
 %              ["VM3000_03_Final/VM3000_03_Final_1470nm_5mW_2mWpp_1atm" "VM3000_03_Final/VM3000_03_Final_904nm_5mW_2mWpp_1atm" "VM3000_01_Journal/VM3000_01_Journal_638nm_5mW_2mWpp_1atm" "VM3000_01_Journal/VM3000_01_Journal_450nm_5mW_2mWpp_1atm"]};
 % titles = ["CMM3526", "SPU0410", "ICS41350", "ADMP401", "SPA1687", "SPH0641", "VM1010", "VM3000"];
 
-out_file = "Vib_Comparison";
-FIG_FILES = {["CMM05_Vib_Final/CMM05_Vib_Final_1470nm_5mW_2mWpp_1atm" "CMM05_Vib_Final/CMM05_Vib_Final_450nm_5mW_2mWpp_1atm"]
-             ["SPU03_Vib_Final/SPU03_Vib_Final_1470nm_5mW_2mWpp_1atm" "SPU06_Vib/SPU06_Vib_450nm_5mW_2mWpp_1atm"]
-             ["ICS02_Vib_Final/ICS02_Vib_Final_1470nm_5mW_2mWpp_1atm" "ICS02_Vib/ICS02_Vib_450nm_5mW_2mWpp_1atm"]
-             ["ADMP06_MEMBACK_Unpowered_Vib/ADMP06_MEMBACK_Unpowered_Vib_1470nm_5mW_2mWpp_1atm" "ADMP06_MEMBACK_Unpowered_Vib/ADMP06_MEMBACK_Unpowered_Vib_450nm_5mW_2mWpp_1atm"]
-             ["SPA04_Vib_Final/SPA04_Vib_Final_1470nm_5mW_2mWpp_1atm" "SPA04_Vib_Final/SPA04_Vib_Final_450nm_5mW_2mWpp_1atm"]
-             ["SPH0641_03_Vib_Final/SPH0641_03_Vib_Final_1470nm_5mW_2mWpp_1atm" "SPH0641_03_Vib/SPH0641_03_Vib_450nm_5mW_2mWpp_1atm"]
-             ["VM1010_04_Vib_Final/VM1010_04_Vib_Final_1470nm_5mW_2mWpp_1atm" "VM1010_01_Vib/VM1010_01_Vib_450nm_5mW_2mWpp_1atm"]
-             ["VM3000_03_Vib_Final/VM3000_03_Vib_Final_1470nm_5mW_2mWpp_1atm" "VM3000_03_Vib/VM3000_03_Vib_450nm_5mW_2mWpp_1atm"]};
-titles = ["CMM3526", "SPU0410", "ICS41350", "ADMP401", "SPA1687", "SPH0641", "VM1010", "VM3000"];
-channel_select = {[2, 2], [2, 1], [2, 1], [2, 2], [2, 2], [2, 1], [2, 1], [2, 1]};
+% out_file = "Vib_Comparison";
+% FIG_FILES = {["CMM05_Vib_Final2/CMM05_Vib_Final2_1470nm_3mW_2mWpp_1atm" "CMM05_Vib_Final/CMM05_Vib_Final_450nm_3mW_2mWpp_1atm"]
+%              ["SPU03_Vib_Final/SPU03_Vib_Final_1470nm_5mW_2mWpp_1atm" "SPU06_Vib/SPU06_Vib_450nm_5mW_2mWpp_1atm"]
+%              ["ICS02_Vib_Final/ICS02_Vib_Final_1470nm_5mW_2mWpp_1atm" "ICS02_Vib/ICS02_Vib_450nm_5mW_2mWpp_1atm"]
+%              ["ADMP10_MEMBACK_Vib_Final/ADMP10_MEMBACK_Vib_Final_1470nm_5mW_2mWpp_1atm" "ADMP10_MEMBACK_Vib_Final/ADMP10_MEMBACK_Vib_Final_450nm_5mW_2mWpp_1atm"]
+%              ["SPA04_Vib_Final2/SPA04_Vib_Final2_1470nm_5mW_2mWpp_1atm" "SPA04_Vib_Test/sPA04_Vib_Test_450nm_5mW_2mWpp_1atm"]
+%              ["SPH0641_03_Vib_Final/SPH0641_03_Vib_Final_1470nm_5mW_2mWpp_1atm" "SPH0641_03_Vib/SPH0641_03_Vib_450nm_5mW_2mWpp_1atm"]
+%              ["VM1010_04_Vib_Final/VM1010_04_Vib_Final_1470nm_5mW_2mWpp_1atm" "VM1010_01_Vib/VM1010_01_Vib_450nm_5mW_2mWpp_1atm"]
+%              ["VM3000_03_Vib_Final/VM3000_03_Vib_Final_1470nm_5mW_2mWpp_1atm" "VM3000_03_Vib/VM3000_03_Vib_450nm_5mW_2mWpp_1atm"]};
+% titles = ["CMM3526", "SPU0410", "ICS41350", "ADMP401", "SPA1687", "SPH0641", "VM1010", "VM3000"];
+% channel_select = {[2, 2], [2, 1], [2, 1], [2, 2], [2, 2], [2, 1], [2, 1], [2, 1]};
+% power_select = {[3, 3], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4]};
+% remove_points = {[3, 3], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4]};
 
 % legend_array = {["Packaged" "Unpackaged"]
 %                 ["Packaged" "Unpackaged"]
@@ -128,14 +130,14 @@ channel_select = {[2, 2], [2, 1], [2, 1], [2, 2], [2, 2], [2, 1], [2, 1], [2, 1]
 %                 ["Packaged" "Unpackaged"]
 %                 ["Packaged" "Unpackaged"]};
             
-% legend_array = {["0.1atm" "1atm"]
-%                 ["0.1atm" "1atm"]
-%                 ["0.1atm" "1atm"]
-%                 ["0.1atm" "1atm"]
-%                 ["0.1atm" "1atm"]
-%                 ["0.1atm" "1atm"]
-%                 ["0.1atm" "1atm"]
-%                 ["0.1atm" "1atm"]};
+legend_array = {["0.1atm" "1atm"]
+                ["0.1atm" "1atm"]
+                ["0.1atm" "1atm"]
+                ["0.1atm" "1atm"]
+                ["0.1atm" "1atm"]
+                ["0.1atm" "1atm"]
+                ["0.1atm" "1atm"]
+                ["0.1atm" "1atm"]};
             
 % legend_array = {["1mW" "5mW"]
 %                 ["1mW" "5mW"]
@@ -182,17 +184,17 @@ channel_select = {[2, 2], [2, 1], [2, 1], [2, 2], [2, 2], [2, 1], [2, 1], [2, 1]
 %                 ["1470nm" "Vib"]
 %                 ["1470nm" "Vib"]};
 
-legend_array = {["1470nm" "450nm"]
-                ["1470nm" "450nm"]
-                ["1470nm" "450nm"]
-                ["1470nm" "450nm"]
-                ["1470nm" "450nm"]
-                ["1470nm" "450nm"]
-                ["1470nm" "450nm"]
-                ["1470nm" "450nm"]};
+% legend_array = {["1470nm" "450nm"]
+%                 ["1470nm" "450nm"]
+%                 ["1470nm" "450nm"]
+%                 ["1470nm" "450nm"]
+%                 ["1470nm" "450nm"]
+%                 ["1470nm" "450nm"]
+%                 ["1470nm" "450nm"]
+%                 ["1470nm" "450nm"]};
          
 NORMALIZE = false;
-P_VALUE_CUTOFF = 0.987;
+P_VALUE_CUTOFF = 0.9987;
 num_plots = 2*size(FIG_FILES, 1);
 
 
@@ -202,8 +204,8 @@ GREEN = [0 0.5 0.2];
 BLACK = [0 0 0];
 GRAY = [0.5 0.5 0.5];
 ORANGE = [0.8 0.5 0];
-COLOR_ORDER = [BLACK; BLUE]; %BLUE; RED;];% BLUE];
-LINES_STYLE_ORDER = {'-', '--', 'o--', ':', 'o:'};
+COLOR_ORDER = [BLACK;]; %BLUE; RED;];% BLUE];
+LINES_STYLE_ORDER = {':', '-', 'o--', ':', 'o:'};
 
 
 my_fig = figure;
@@ -217,6 +219,14 @@ for ind1 = 1:size(FIG_FILES,1)
         load(strcat(folder, FIG_FILES{ind1}(ind2),'.mat'))
         if exist('channel_select', 'var')
             channel_index = channel_select{ind1}(ind2);
+        else
+            channel_index = 1;
+        end
+            
+        if exist('power_select', 'var')
+            power_index = power_select{ind1}(ind2);
+        else
+            power_index = 4;
         end
             
         if isequal(size(amp_out),[100 2])
@@ -225,7 +235,7 @@ for ind1 = 1:size(FIG_FILES,1)
         end
            
         if exist('p_vals', 'var')
-            bad_indices = p_vals(4,:,channel_index) < P_VALUE_CUTOFF;
+            bad_indices = p_vals(power_index,:,channel_index) < P_VALUE_CUTOFF;
             scale_factor = 1; %std(amp_out(~bad_indices))/last_std;
 %             good_indices = last_good_indices & ~bad_indices;
 %             scale_mean = 1; %mean(y_datas_mag(good_indices, ind2) - scale_factor*amp_out(good_indices));
@@ -275,14 +285,16 @@ for ind1 = 1:size(FIG_FILES,1)
     
 %     set(my_fig,'defaultAxesColorOrder',[BLACK; BLACK]);
     
-    scatter(x_datas, y_datas_mag, 'LineWidth', 3);
-    set(gca,'xscale','log')
-    set(gca,'yscale','log')
+%     scatter(x_datas, y_datas_mag, 'LineWidth', 3);
+%     set(gca,'xscale','log')
+%     set(gca,'yscale','log')
+    loglog(x_datas, y_datas_mag, 'LineWidth', 3);
+
     hold on;
     ax = gca;
     colororder(COLOR_ORDER);
     ax.LineStyleOrder = LINES_STYLE_ORDER;
-    ylabel('Amplitude (nm)');
+    ylabel('Amplitude (mV)');
     ylim([1e-3 1e3]);
     xlim([10 100000]);
     yticks([1e-2 1e-1 1e0 1e1 1e2 1e3]);
@@ -307,15 +319,16 @@ for ind1 = 1:size(FIG_FILES,1)
     else
         subplot('Position', [0.25*(ind1-5)+0.03 0.05 0.21 0.21]);
     end
-    scatter(x_datas, y_datas_phase, 'LineWidth', 3);
-    set(gca,'xscale','log')
+%     scatter(x_datas, y_datas_phase, 'LineWidth', 3);
+%     set(gca,'xscale','log')
+    semilogx(x_datas, y_datas_phase, 'LineWidth', 3);
     ylim([-180 180]);
     yticks([-180 -135 -90 -45 0 45 90 135 180]);
     xlim([10 100000]);
     ax = gca;
     colororder(COLOR_ORDER);
     ax.LineStyleOrder = LINES_STYLE_ORDER;
-    legend(legend_array{ind1}, 'Location', 'south');
+    legend(legend_array{ind1}, 'Location', 'north');
     ylabel(['Phase (' char(176) ')']);
     xlabel('Frequency (Hz)');
     save(append(titles(ind1), ".mat"), 'x_datas', 'y_datas_mag', 'y_datas_phase');
